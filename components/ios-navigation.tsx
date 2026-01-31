@@ -174,7 +174,7 @@ export function IOSLayout({
   const hasBreadcrumbs = breadcrumbs.length > 1
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background ios-bg-gradient">
       <TopBar 
         title={title} 
         showSearch={showSearch} 

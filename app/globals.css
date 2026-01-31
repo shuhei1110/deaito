@@ -125,38 +125,149 @@
   }
 }
 
-/* iOS Glassmorphism */
+/* iOS Glassmorphism - Enhanced */
 .ios-glass {
-  background: rgba(250, 248, 245, 0.72);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
 }
 
 .ios-glass-subtle {
-  background: rgba(250, 248, 245, 0.6);
-  backdrop-filter: saturate(150%) blur(12px);
-  -webkit-backdrop-filter: saturate(150%) blur(12px);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: saturate(150%) blur(16px);
+  -webkit-backdrop-filter: saturate(150%) blur(16px);
 }
 
 .ios-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(44, 40, 37, 0.06);
-  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 1.25rem;
+  box-shadow: 
+    0 2px 16px -2px rgba(0, 0, 0, 0.06),
+    0 1px 0 0 rgba(255, 255, 255, 0.6) inset;
 }
 
+.ios-card-solid {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 1.25rem;
+  box-shadow: 
+    0 4px 24px -4px rgba(0, 0, 0, 0.08),
+    0 1px 0 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+.ios-button {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.ios-button:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.ios-button:active {
+  transform: scale(0.98);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* Decorative gradient background for glassmorphism effect */
+.ios-bg-gradient {
+  position: relative;
+  background: linear-gradient(180deg, #faf8f5 0%, #f5f0ea 100%);
+}
+
+.ios-bg-gradient::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(232, 168, 124, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 50% at 90% 20%, rgba(232, 168, 124, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 30% 90%, rgba(232, 168, 124, 0.12) 0%, transparent 50%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.ios-bg-gradient::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 70% 60%, rgba(255, 220, 190, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 20% 40%, rgba(255, 235, 220, 0.1) 0%, transparent 35%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Dark mode */
 .dark .ios-glass {
-  background: rgba(26, 24, 22, 0.72);
+  background: rgba(36, 33, 32, 0.65);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.05) inset;
 }
 
 .dark .ios-glass-subtle {
-  background: rgba(26, 24, 22, 0.6);
+  background: rgba(36, 33, 32, 0.45);
 }
 
 .dark .ios-card {
-  background: rgba(36, 33, 32, 0.7);
-  border: 1px solid rgba(245, 242, 238, 0.06);
+  background: rgba(46, 42, 40, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 2px 16px -2px rgba(0, 0, 0, 0.3),
+    0 1px 0 0 rgba(255, 255, 255, 0.05) inset;
+}
+
+.dark .ios-card-solid {
+  background: rgba(46, 42, 40, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 4px 24px -4px rgba(0, 0, 0, 0.4),
+    0 1px 0 0 rgba(255, 255, 255, 0.08) inset;
+}
+
+.dark .ios-button {
+  background: rgba(46, 42, 40, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dark .ios-button:hover {
+  background: rgba(46, 42, 40, 0.7);
+}
+
+.dark .ios-button:active {
+  background: rgba(46, 42, 40, 0.8);
+}
+
+.dark .ios-bg-gradient {
+  background: linear-gradient(180deg, #1a1816 0%, #141210 100%);
+}
+
+.dark .ios-bg-gradient::before {
+  background: 
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(232, 168, 124, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 50% at 90% 20%, rgba(232, 168, 124, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 30% 90%, rgba(232, 168, 124, 0.05) 0%, transparent 50%);
+}
+
+.dark .ios-bg-gradient::after {
+  background: 
+    radial-gradient(circle at 70% 60%, rgba(200, 150, 100, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 20% 40%, rgba(180, 130, 90, 0.04) 0%, transparent 35%);
 }
 
 /* iOS-style safe area padding */
@@ -164,4 +275,9 @@
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
   }
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
 }
