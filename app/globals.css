@@ -127,14 +127,13 @@
 
 /* iOS Glassmorphism - Enhanced */
 .ios-glass {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: saturate(180%) blur(24px);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
-  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
+  background: rgba(250, 248, 245, 0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
 .ios-glass-subtle {
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(250, 248, 245, 0.7);
   backdrop-filter: saturate(150%) blur(16px);
   -webkit-backdrop-filter: saturate(150%) blur(16px);
 }
@@ -216,12 +215,11 @@
 
 /* Dark mode */
 .dark .ios-glass {
-  background: rgba(36, 33, 32, 0.65);
-  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.05) inset;
+  background: rgba(26, 24, 22, 0.85);
 }
 
 .dark .ios-glass-subtle {
-  background: rgba(36, 33, 32, 0.45);
+  background: rgba(26, 24, 22, 0.7);
 }
 
 .dark .ios-card {
