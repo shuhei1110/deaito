@@ -15,37 +15,36 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-5">
+      <header className="bg-background/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-4">
-              <h1 className="text-3xl font-serif tracking-tight">deaito</h1>
+              <h1 className="text-3xl font-serif font-light tracking-wide italic">deaito</h1>
             </Link>
-            <nav className="hidden md:flex items-center gap-8 text-sm">
-              <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
+            <nav className="hidden md:flex items-center gap-10 text-sm">
+              <Link href="/" className="text-foreground/60 hover:text-foreground transition-colors duration-300">
                 Home
               </Link>
-              <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link href="/" className="text-foreground/60 hover:text-foreground transition-colors duration-300">
                 Albums
               </Link>
-              <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link href="/" className="text-foreground/60 hover:text-foreground transition-colors duration-300">
                 Connections
               </Link>
             </nav>
-            <div className="text-xs text-muted-foreground uppercase tracking-widest">Demo</div>
+            <div className="text-[10px] text-foreground/40 uppercase tracking-[0.2em]">Demo</div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-12">
+      <main className="container mx-auto px-6 py-16">
         {/* Hero Section */}
-        <div className="mb-16 text-center max-w-2xl mx-auto">
-          <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">Reconnect with your past</p>
-          <h2 className="text-4xl md:text-5xl font-serif leading-tight mb-4 text-balance">
-            思い出をつなぐ、新しい出会い
+        <div className="mb-20 text-center max-w-xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-serif font-light leading-tight mb-6 text-balance italic">
+            終わりのない「つながり」を
           </h2>
-          <p className="text-muted-foreground leading-relaxed">
-            AIがあなたにぴったりの同窓会を提案します。写真や動画を共有し、同じ思い出に興味を持った同級生と再会しましょう。
+          <p className="text-foreground/50 leading-relaxed text-sm">
+            卒業しても、つながりを保つ。AIエージェントと共に、人間関係の運用保守を円滑にしていく、新しい卒業アルバム。
           </p>
         </div>
 
@@ -58,27 +57,27 @@ export default function Home() {
           {/* Main Content - Tabs for different sections */}
           <div className="lg:col-span-8">
             <Tabs defaultValue="invitations" className="w-full">
-              <TabsList className="w-full justify-start bg-transparent border-b border-border rounded-none h-auto p-0 mb-8">
+              <TabsList className="w-full justify-start bg-transparent border-b border-border/50 rounded-none h-auto p-0 mb-10">
                 <TabsTrigger 
                   value="invitations" 
-                  className="relative rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-6 py-3 text-sm font-medium"
+                  className="relative rounded-none border-b border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-5 py-4 text-xs uppercase tracking-[0.15em] text-foreground/50 data-[state=active]:text-foreground transition-colors"
                 >
                   Invitations
                   {newInvitationsCount > 0 && (
-                    <Badge className="ml-2 h-5 min-w-5 px-1.5 flex items-center justify-center rounded-full bg-foreground text-background text-xs">
+                    <Badge className="ml-2 h-4 min-w-4 px-1 flex items-center justify-center rounded-full bg-accent text-accent-foreground text-[10px]">
                       {newInvitationsCount}
                     </Badge>
                   )}
                 </TabsTrigger>
                 <TabsTrigger 
                   value="albums" 
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-6 py-3 text-sm font-medium"
+                  className="rounded-none border-b border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-5 py-4 text-xs uppercase tracking-[0.15em] text-foreground/50 data-[state=active]:text-foreground transition-colors"
                 >
                   Albums
                 </TabsTrigger>
                 <TabsTrigger 
                   value="timeline" 
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-6 py-3 text-sm font-medium"
+                  className="rounded-none border-b border-transparent data-[state=active]:border-foreground data-[state=active]:bg-transparent px-5 py-4 text-xs uppercase tracking-[0.15em] text-foreground/50 data-[state=active]:text-foreground transition-colors"
                 >
                   Timeline
                 </TabsTrigger>
@@ -101,12 +100,12 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border mt-24 py-12">
+      <footer className="border-t border-border/30 mt-32 py-16">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-2xl font-serif">deaito</p>
-            <p className="text-xs text-muted-foreground uppercase tracking-widest">
-              Reconnecting memories since 2024
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <p className="text-2xl font-serif font-light italic">deaito</p>
+            <p className="text-[10px] text-foreground/40 uppercase tracking-[0.2em]">
+              Endless connections since 2024
             </p>
           </div>
         </div>

@@ -73,37 +73,36 @@ export function InvitationDetail({ invitationId, onClose }: InvitationDetailProp
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto border-border">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto border-border/30 bg-card">
         <DialogHeader className="space-y-4">
           <div className="flex items-start justify-between gap-4">
-            <div className="space-y-2">
-              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Reunion Invitation</p>
-              <DialogTitle className="text-2xl font-serif text-balance pr-8">{invitation.title}</DialogTitle>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="space-y-3">
+              <DialogTitle className="text-2xl font-serif font-light italic text-balance pr-8">{invitation.title}</DialogTitle>
+              <div className="flex items-center gap-2 text-[10px] text-foreground/40 uppercase tracking-[0.1em]">
                 <Sparkles className="h-3 w-3" />
                 <span>AIエージェント「つなぐくん」より</span>
               </div>
             </div>
-            <Badge variant="secondary" className="rounded-full text-xs font-normal">
+            <Badge variant="secondary" className="rounded-full text-[10px] font-normal bg-transparent border border-border/40 text-foreground/60">
               Match {invitation.matchScore}%
             </Badge>
           </div>
         </DialogHeader>
 
-        <div className="space-y-6 pt-2">
+        <div className="space-y-8 pt-4">
           {/* Reason */}
-          <div className="p-4 bg-secondary/50 rounded-lg">
-            <p className="text-sm leading-relaxed">{invitation.reason}</p>
+          <div className="p-5 bg-background/50 rounded-lg border border-border/20">
+            <p className="text-sm leading-relaxed text-foreground/70">{invitation.reason}</p>
           </div>
 
           {/* Trigger Post */}
-          <div className="space-y-3">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-              <ImageIcon className="h-3.5 w-3.5" />
+          <div className="space-y-4">
+            <p className="text-[10px] uppercase tracking-[0.15em] text-foreground/40 flex items-center gap-2">
+              <ImageIcon className="h-3 w-3" />
               Related Post
             </p>
             <Link href={`/album/${invitation.triggerPost.albumId}?post=${invitation.triggerPost.id}`}>
-              <div className="p-4 rounded-lg border border-border bg-card hover:border-foreground/20 transition-all cursor-pointer">
+              <div className="p-4 rounded-lg border border-border/30 bg-background/30 hover:border-border/50 transition-all cursor-pointer">
                 <div className="flex items-center gap-4">
                   <img
                     src={invitation.triggerPost.thumbnail || "/placeholder.svg"}
@@ -111,9 +110,9 @@ export function InvitationDetail({ invitationId, onClose }: InvitationDetailProp
                     className="w-16 h-16 rounded-lg object-cover"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm mb-1">{invitation.triggerPost.title}</p>
-                    <p className="text-xs text-muted-foreground mb-2">{invitation.triggerPost.albumName}</p>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <p className="text-sm mb-1">{invitation.triggerPost.title}</p>
+                    <p className="text-[11px] text-foreground/40 mb-2">{invitation.triggerPost.albumName}</p>
+                    <div className="flex items-center gap-4 text-[10px] text-foreground/30">
                       <span className="flex items-center gap-1">
                         <Heart className="h-3 w-3" />
                         {invitation.triggerPost.likes}
@@ -130,21 +129,21 @@ export function InvitationDetail({ invitationId, onClose }: InvitationDetailProp
           </div>
 
           {/* Suggested Members */}
-          <div className="space-y-3">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-              <Users className="h-3.5 w-3.5" />
+          <div className="space-y-4">
+            <p className="text-[10px] uppercase tracking-[0.15em] text-foreground/40 flex items-center gap-2">
+              <Users className="h-3 w-3" />
               Attendees ({invitation.suggestedMembers.length})
             </p>
             <div className="grid grid-cols-2 gap-3">
               {invitation.suggestedMembers.map((member, idx) => (
-                <div key={idx} className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30 border border-border">
-                  <Avatar className="h-10 w-10 border border-border">
+                <div key={idx} className="flex items-center gap-3 p-3 rounded-lg bg-background/30 border border-border/20">
+                  <Avatar className="h-10 w-10 border border-border/30">
                     <AvatarImage src={member.avatar || "/placeholder.svg"} />
-                    <AvatarFallback className="text-xs">{member.name[0]}</AvatarFallback>
+                    <AvatarFallback className="text-xs font-serif italic">{member.name[0]}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{member.name}</p>
-                    <p className="text-xs text-muted-foreground truncate">{member.interests.join(", ")}</p>
+                    <p className="text-sm truncate">{member.name}</p>
+                    <p className="text-[10px] text-foreground/40 truncate">{member.interests.join(", ")}</p>
                   </div>
                 </div>
               ))}
@@ -152,11 +151,11 @@ export function InvitationDetail({ invitationId, onClose }: InvitationDetailProp
           </div>
 
           {/* Common Interests */}
-          <div className="space-y-3">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Common Interests</p>
+          <div className="space-y-4">
+            <p className="text-[10px] uppercase tracking-[0.15em] text-foreground/40">Common Interests</p>
             <div className="flex flex-wrap gap-2">
               {invitation.commonInterests.map((interest, idx) => (
-                <Badge key={idx} variant="secondary" className="rounded-full text-xs font-normal">
+                <Badge key={idx} variant="secondary" className="rounded-full text-xs font-normal bg-transparent border border-border/30 text-foreground/60">
                   {interest}
                 </Badge>
               ))}
@@ -164,38 +163,38 @@ export function InvitationDetail({ invitationId, onClose }: InvitationDetailProp
           </div>
 
           {/* Details */}
-          <div className="space-y-4 p-5 bg-secondary/30 rounded-lg border border-border">
+          <div className="space-y-4 p-5 bg-background/30 rounded-lg border border-border/20">
             <div className="flex items-center gap-3 text-sm">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span className="text-muted-foreground">Date:</span>
-              <span className="font-medium">{invitation.suggestedDate}</span>
+              <Calendar className="h-4 w-4 text-foreground/30" />
+              <span className="text-foreground/50">Date:</span>
+              <span>{invitation.suggestedDate}</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
-              <MapPin className="h-4 w-4 text-muted-foreground" />
-              <span className="text-muted-foreground">Venue:</span>
-              <span className="font-medium">{invitation.suggestedVenue}</span>
+              <MapPin className="h-4 w-4 text-foreground/30" />
+              <span className="text-foreground/50">Venue:</span>
+              <span>{invitation.suggestedVenue}</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <span className="text-muted-foreground">Duration:</span>
-              <span className="font-medium">約2時間</span>
+              <Clock className="h-4 w-4 text-foreground/30" />
+              <span className="text-foreground/50">Duration:</span>
+              <span>約2時間</span>
             </div>
           </div>
 
           {/* Actions */}
           {!accepted ? (
             <div className="flex gap-3 pt-2">
-              <Button className="flex-1 h-12 uppercase tracking-wider text-xs" onClick={() => setAccepted(true)}>
+              <Button className="flex-1 h-12 uppercase tracking-[0.15em] text-[10px] bg-foreground text-background hover:bg-foreground/90" onClick={() => setAccepted(true)}>
                 Accept Invitation
               </Button>
-              <Button variant="outline" className="flex-1 h-12 uppercase tracking-wider text-xs bg-transparent" onClick={onClose}>
+              <Button variant="outline" className="flex-1 h-12 uppercase tracking-[0.15em] text-[10px] bg-transparent border-border/40 text-foreground/60 hover:bg-background/50 hover:text-foreground" onClick={onClose}>
                 Decide Later
               </Button>
             </div>
           ) : (
             <div className="flex items-center justify-center gap-3 p-5 bg-foreground text-background rounded-lg">
               <CheckCircle2 className="h-5 w-5" />
-              <span className="text-sm font-medium">参加申し込み完了！AIが幹事として調整を進めます</span>
+              <span className="text-sm">参加申し込み完了！AIが幹事として調整を進めます</span>
             </div>
           )}
         </div>

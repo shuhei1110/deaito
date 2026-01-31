@@ -31,54 +31,53 @@ export function InvitationLetters() {
 
   return (
     <>
-      <div className="space-y-6">
+      <div className="space-y-8">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">New for you</p>
-            <h2 className="text-2xl font-serif">届いた招待状</h2>
+            <h2 className="text-2xl font-serif font-light italic">届いた招待状</h2>
           </div>
-          <Sparkles className="h-5 w-5 text-muted-foreground" />
+          <Sparkles className="h-4 w-4 text-foreground/30" />
         </div>
 
         <div className="space-y-4">
           {invitations.map((invitation) => (
             <div
               key={invitation.id}
-              className="group p-6 bg-card border border-border rounded-lg cursor-pointer hover:border-foreground/20 transition-all duration-300"
+              className="group p-6 bg-card/50 border border-border/30 rounded-lg cursor-pointer hover:border-border/60 hover:bg-card transition-all duration-300"
               onClick={() => setSelectedInvitation(invitation.id)}
             >
               <div className="flex items-start justify-between gap-6">
                 <div className="flex-1 space-y-4">
                   <div className="flex items-start gap-3">
                     {invitation.unread && (
-                      <div className="w-2 h-2 rounded-full bg-accent mt-2 flex-shrink-0" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 flex-shrink-0" />
                     )}
-                    <div className="space-y-1">
-                      <h3 className="font-medium text-lg">{invitation.title}</h3>
-                      <p className="text-xs text-muted-foreground flex items-center gap-2">
+                    <div className="space-y-2">
+                      <h3 className="text-base">{invitation.title}</h3>
+                      <p className="text-[11px] text-foreground/40 flex items-center gap-2">
                         <Sparkles className="h-3 w-3" />
                         {invitation.from}
                       </p>
                     </div>
                   </div>
 
-                  <p className="text-sm text-muted-foreground leading-relaxed pl-5">
+                  <p className="text-sm text-foreground/50 leading-relaxed pl-4">
                     {invitation.preview}
                   </p>
 
-                  <div className="flex items-center gap-4 pl-5">
+                  <div className="flex items-center gap-4 pl-4">
                     <Badge 
                       variant="secondary" 
-                      className="rounded-full px-3 py-1 text-xs font-normal bg-secondary"
+                      className="rounded-full px-3 py-1 text-[10px] font-normal bg-transparent border border-border/40 text-foreground/60"
                     >
                       Match {invitation.matchScore}%
                     </Badge>
-                    <span className="text-xs text-muted-foreground">{invitation.date}</span>
+                    <span className="text-[10px] text-foreground/30">{invitation.date}</span>
                   </div>
                 </div>
 
                 <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ArrowUpRight className="h-5 w-5 text-muted-foreground" />
+                  <ArrowUpRight className="h-4 w-4 text-foreground/30" />
                 </div>
               </div>
             </div>

@@ -21,62 +21,62 @@ const mockUser = {
 
 export function UserProfile() {
   return (
-    <Card className="overflow-hidden border-0 shadow-none bg-card">
+    <Card className="overflow-hidden border-0 shadow-none bg-transparent">
       <CardContent className="p-0">
         {/* Profile Header */}
-        <div className="p-8 pb-6">
-          <div className="flex items-start justify-between mb-6">
-            <Avatar className="h-20 w-20 border-2 border-border">
+        <div className="pb-8">
+          <div className="flex items-start justify-between mb-8">
+            <Avatar className="h-24 w-24 border border-border/50">
               <AvatarImage src={mockUser.avatar || "/placeholder.svg"} alt={mockUser.name} />
-              <AvatarFallback className="text-xl font-serif">TT</AvatarFallback>
+              <AvatarFallback className="text-xl font-serif italic">TT</AvatarFallback>
             </Avatar>
-            <Button variant="ghost" size="sm" className="text-xs uppercase tracking-wider">
+            <Button variant="ghost" size="sm" className="text-[10px] uppercase tracking-[0.15em] text-foreground/50 hover:text-foreground hover:bg-transparent">
               Edit
               <ArrowUpRight className="h-3 w-3 ml-1" />
             </Button>
           </div>
           
-          <div className="space-y-1">
-            <h2 className="text-2xl font-serif">{mockUser.name}</h2>
-            <p className="text-xs text-muted-foreground uppercase tracking-wider">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-serif font-light">{mockUser.name}</h2>
+            <p className="text-[10px] text-foreground/40 uppercase tracking-[0.15em]">
               Member since {mockUser.joinDate}
             </p>
           </div>
         </div>
 
         {/* Divider */}
-        <div className="border-t border-border" />
+        <div className="border-t border-border/30" />
 
         {/* Basic Info */}
-        <div className="p-8 py-6 space-y-4">
-          <div className="flex items-center gap-3 text-sm">
-            <Briefcase className="h-4 w-4 text-muted-foreground" />
+        <div className="py-6 space-y-4">
+          <div className="flex items-center gap-3 text-sm text-foreground/70">
+            <Briefcase className="h-4 w-4 text-foreground/40" />
             <span>{mockUser.occupation}</span>
           </div>
-          <div className="flex items-center gap-3 text-sm">
-            <MapPin className="h-4 w-4 text-muted-foreground" />
+          <div className="flex items-center gap-3 text-sm text-foreground/70">
+            <MapPin className="h-4 w-4 text-foreground/40" />
             <span>{mockUser.location}</span>
           </div>
         </div>
 
         {/* Divider */}
-        <div className="border-t border-border" />
+        <div className="border-t border-border/30" />
 
         {/* Schools */}
-        <div className="p-8 py-6">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground mb-4">Albums</p>
+        <div className="py-6">
+          <p className="text-[10px] uppercase tracking-[0.15em] text-foreground/40 mb-5">Albums</p>
           <div className="space-y-3">
             {mockUser.schools.map((school) => (
               <div 
                 key={school.id} 
-                className="group p-4 bg-secondary/50 rounded-lg hover:bg-secondary transition-colors cursor-pointer"
+                className="group p-4 bg-card/50 border border-border/30 rounded-lg hover:border-border/60 transition-all cursor-pointer"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-sm">{school.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{school.year}</p>
+                    <p className="text-sm">{school.name}</p>
+                    <p className="text-[11px] text-foreground/40 mt-1">{school.year}</p>
                   </div>
-                  <ArrowUpRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowUpRight className="h-4 w-4 text-foreground/30 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
               </div>
             ))}
@@ -84,17 +84,17 @@ export function UserProfile() {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-border" />
+        <div className="border-t border-border/30" />
 
         {/* Interests */}
-        <div className="p-8 py-6">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground mb-4">Interests</p>
+        <div className="py-6">
+          <p className="text-[10px] uppercase tracking-[0.15em] text-foreground/40 mb-5">Interests</p>
           <div className="flex flex-wrap gap-2">
             {mockUser.interests.map((interest, index) => (
               <Badge 
                 key={index} 
                 variant="secondary" 
-                className="rounded-full px-3 py-1 text-xs font-normal hover:bg-foreground hover:text-background transition-colors cursor-pointer"
+                className="rounded-full px-3 py-1.5 text-xs font-normal bg-card/50 border border-border/30 text-foreground/70 hover:bg-foreground hover:text-background hover:border-foreground transition-all cursor-pointer"
               >
                 {interest}
               </Badge>

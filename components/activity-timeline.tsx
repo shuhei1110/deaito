@@ -85,17 +85,17 @@ const mockActivities = [
 const getActivityIcon = (type: string) => {
   switch (type) {
     case "upload":
-      return <Upload className="h-3.5 w-3.5" />
+      return <Upload className="h-3 w-3" />
     case "like":
-      return <Heart className="h-3.5 w-3.5" />
+      return <Heart className="h-3 w-3" />
     case "comment":
-      return <MessageCircle className="h-3.5 w-3.5" />
+      return <MessageCircle className="h-3 w-3" />
     case "join":
-      return <UserPlus className="h-3.5 w-3.5" />
+      return <UserPlus className="h-3 w-3" />
     case "view":
-      return <Eye className="h-3.5 w-3.5" />
+      return <Eye className="h-3 w-3" />
     default:
-      return <Eye className="h-3.5 w-3.5" />
+      return <Eye className="h-3 w-3" />
   }
 }
 
@@ -103,29 +103,28 @@ export function ActivityTimeline() {
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">Recent activity</p>
-        <h2 className="text-2xl font-serif">最新の動き</h2>
+        <h2 className="text-2xl font-serif font-light italic">最新の動き</h2>
       </div>
 
       <div className="space-y-1">
         {mockActivities.map((activity, index) => (
           <div 
             key={activity.id} 
-            className="group relative py-6 hover:bg-secondary/30 -mx-4 px-4 rounded-lg transition-colors"
+            className="group relative py-6 hover:bg-card/30 -mx-4 px-4 rounded-lg transition-colors"
           >
             {/* Timeline line */}
             {index !== mockActivities.length - 1 && (
-              <div className="absolute left-[26px] top-16 bottom-0 w-px bg-border" />
+              <div className="absolute left-[26px] top-16 bottom-0 w-px bg-border/30" />
             )}
             
             <div className="flex gap-4">
               {/* Avatar with icon overlay */}
               <div className="relative flex-shrink-0">
-                <Avatar className="h-10 w-10 border border-border">
+                <Avatar className="h-10 w-10 border border-border/30">
                   <AvatarImage src={activity.user.avatar || "/placeholder.svg"} />
-                  <AvatarFallback className="text-xs">{activity.user.name[0]}</AvatarFallback>
+                  <AvatarFallback className="text-xs font-serif italic">{activity.user.name[0]}</AvatarFallback>
                 </Avatar>
-                <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-background border border-border flex items-center justify-center">
+                <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-card border border-border/30 flex items-center justify-center text-foreground/50">
                   {getActivityIcon(activity.type)}
                 </div>
               </div>
@@ -134,30 +133,30 @@ export function ActivityTimeline() {
               <div className="flex-1 min-w-0 space-y-3">
                 <div className="flex items-start justify-between gap-4">
                   <p className="text-sm">
-                    <span className="font-medium">{activity.user.name}</span>
-                    <span className="text-muted-foreground ml-1.5">{activity.action}</span>
+                    <span>{activity.user.name}</span>
+                    <span className="text-foreground/40 ml-1.5">{activity.action}</span>
                   </p>
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">{activity.time}</span>
+                  <span className="text-[10px] text-foreground/30 whitespace-nowrap">{activity.time}</span>
                 </div>
 
                 {/* Activity Content */}
                 {activity.content && activity.type !== "join" && (
-                  <div className="p-4 bg-card border border-border rounded-lg space-y-3">
+                  <div className="p-4 bg-card/50 border border-border/30 rounded-lg space-y-3">
                     <div className="flex items-center gap-2 text-sm">
                       {activity.content.type === "video" ? (
-                        <Video className="h-4 w-4 text-muted-foreground" />
+                        <Video className="h-3.5 w-3.5 text-foreground/40" />
                       ) : (
-                        <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                        <ImageIcon className="h-3.5 w-3.5 text-foreground/40" />
                       )}
-                      <span className="font-medium">{activity.content.title}</span>
+                      <span>{activity.content.title}</span>
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <Badge variant="secondary" className="text-xs font-normal rounded-full">
+                      <Badge variant="secondary" className="text-[10px] font-normal rounded-full bg-transparent border border-border/30 text-foreground/50">
                         {activity.content.school}
                       </Badge>
                       {activity.engagement && (
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-4 text-[10px] text-foreground/30">
                           <span className="flex items-center gap-1">
                             <Eye className="h-3 w-3" />
                             {activity.engagement.views}
@@ -177,7 +176,7 @@ export function ActivityTimeline() {
                     </div>
                     
                     {activity.content.comment && (
-                      <p className="text-sm text-foreground pl-3 border-l-2 border-border">
+                      <p className="text-sm text-foreground/60 pl-3 border-l-2 border-border/30">
                         {activity.content.comment}
                       </p>
                     )}
@@ -185,7 +184,7 @@ export function ActivityTimeline() {
                 )}
 
                 {activity.type === "join" && activity.content && (
-                  <Badge variant="secondary" className="text-xs font-normal rounded-full">
+                  <Badge variant="secondary" className="text-[10px] font-normal rounded-full bg-transparent border border-border/30 text-foreground/50">
                     {activity.content.school}
                   </Badge>
                 )}

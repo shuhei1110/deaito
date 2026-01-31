@@ -1,15 +1,19 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, Instrument_Serif } from "next/font/google"
+import { Inter, Cormorant_Garamond } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
 const _inter = Inter({ subsets: ["latin"] })
-const _instrumentSerif = Instrument_Serif({ subsets: ["latin"], weight: "400" })
+const _cormorant = Cormorant_Garamond({ 
+  subsets: ["latin"], 
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"]
+})
 
 export const metadata: Metadata = {
-  title: "deaito - 思い出をつなぐ、新しい出会い",
-  description: "AIが提案する新しい卒業アルバム。写真や動画を共有し、同じ思い出に興味を持った同級生と再会しよう。",
+  title: "deaito - 終わりのない「つながり」を",
+  description: "卒業しても、つながりを保つ。AIエージェントと共に人間関係を円滑にする新しい卒業アルバム。",
   generator: "v0.app",
   icons: {
     icon: [
