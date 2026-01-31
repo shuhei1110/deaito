@@ -17,7 +17,7 @@ interface TopBarProps {
 
 export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopBarProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 ios-glass border-b border-foreground/5">
+    <header className="fixed top-0 left-0 right-0 z-50 ios-glass">
       <div className="flex items-center justify-between px-4 h-14 max-w-2xl mx-auto">
         {/* Left: Logo */}
         <Link href="/" className="flex items-center">
@@ -79,7 +79,7 @@ export function BreadcrumbBar({ items }: BreadcrumbBarProps) {
   if (items.length <= 1) return null
 
   return (
-    <div className="fixed top-14 left-0 right-0 z-40 ios-glass-subtle border-b border-foreground/5">
+    <div className="fixed top-14 left-0 right-0 z-40 ios-glass-subtle">
       <div className="flex items-center gap-2 px-4 h-10 max-w-2xl mx-auto overflow-x-auto">
         {items.map((item, index) => (
           <div key={item.label} className="flex items-center gap-2 shrink-0">
@@ -116,7 +116,7 @@ export function BottomBar() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 ios-glass border-t border-foreground/5">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 ios-glass">
       <div className="flex items-center justify-around h-20 max-w-2xl mx-auto pb-4">
         {navItems.map((item) => {
           const isActive = pathname === item.href || 
