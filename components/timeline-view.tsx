@@ -1,12 +1,11 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, TrendingUp, Heart, Briefcase } from "lucide-react"
 
 const timelineData = [
   {
-    year: "2024年",
+    year: "2024",
     events: [
       {
         date: "2024年1月",
@@ -19,7 +18,7 @@ const timelineData = [
     ],
   },
   {
-    year: "2023年",
+    year: "2023",
     events: [
       {
         date: "2023年10月",
@@ -35,12 +34,12 @@ const timelineData = [
         icon: TrendingUp,
         title: "趣味の変化",
         description: "ハイキングへの興味が増加",
-        change: "ハイキング ⭐⭐ → ⭐⭐⭐",
+        change: "ハイキング ++ ",
       },
     ],
   },
   {
-    year: "2021年",
+    year: "2021",
     events: [
       {
         date: "2021年3月",
@@ -53,7 +52,7 @@ const timelineData = [
     ],
   },
   {
-    year: "2017年",
+    year: "2017",
     events: [
       {
         date: "2017年3月",
@@ -75,55 +74,50 @@ const timelineData = [
   },
 ]
 
-const typeColors = {
-  profile: "bg-accent text-accent-foreground",
-  interest: "bg-primary/10 text-primary",
-  education: "bg-secondary text-secondary-foreground",
-}
-
 export function TimelineView() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-balance mb-2">プロフィールの変遷</h2>
-        <p className="text-muted-foreground text-sm">あなたの成長と変化の軌跡を振り返る</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">Your journey</p>
+        <h2 className="text-2xl font-serif">プロフィールの変遷</h2>
       </div>
 
       <div className="relative">
         {/* Timeline Line */}
-        <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-border" />
+        <div className="absolute left-3 top-0 bottom-0 w-px bg-border" />
 
-        <div className="space-y-8">
+        <div className="space-y-10">
           {timelineData.map((yearGroup, yearIdx) => (
-            <div key={yearIdx} className="space-y-4">
-              <div className="flex items-center gap-3 relative z-10">
-                <Badge variant="outline" className="bg-background px-3 py-1">
-                  {yearGroup.year}
-                </Badge>
+            <div key={yearIdx} className="space-y-6">
+              {/* Year marker */}
+              <div className="flex items-center gap-4 relative">
+                <div className="w-6 h-6 rounded-full bg-foreground flex items-center justify-center z-10">
+                  <div className="w-2 h-2 rounded-full bg-background" />
+                </div>
+                <span className="text-sm font-medium">{yearGroup.year}</span>
               </div>
 
+              {/* Events */}
               {yearGroup.events.map((event, eventIdx) => {
                 const Icon = event.icon
                 return (
-                  <Card key={eventIdx} className="ml-12 hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="flex gap-4">
-                        <div className={`p-2 rounded-lg h-fit ${typeColors[event.type as keyof typeof typeColors]}`}>
+                  <div key={eventIdx} className="ml-12 space-y-3">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-start gap-3">
+                        <div className="p-2 rounded-lg bg-secondary">
                           <Icon className="h-4 w-4" />
                         </div>
-                        <div className="flex-1 space-y-2">
-                          <div className="flex items-center justify-between">
-                            <h3 className="font-semibold">{event.title}</h3>
-                            <span className="text-xs text-muted-foreground">{event.date}</span>
-                          </div>
-                          <p className="text-sm text-muted-foreground">{event.description}</p>
-                          <div className="inline-flex items-center gap-2 px-3 py-1 bg-muted rounded-full text-xs font-mono">
-                            {event.change}
-                          </div>
+                        <div>
+                          <p className="font-medium">{event.title}</p>
+                          <p className="text-sm text-muted-foreground mt-0.5">{event.description}</p>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">{event.date}</span>
+                    </div>
+                    <Badge variant="secondary" className="rounded-full text-xs font-mono font-normal ml-11">
+                      {event.change}
+                    </Badge>
+                  </div>
                 )
               })}
             </div>

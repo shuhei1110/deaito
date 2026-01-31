@@ -1,9 +1,8 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Upload, Heart, MessageCircle, UserPlus, Calendar, Video, ImageIcon, Eye } from "lucide-react"
+import { Upload, Heart, MessageCircle, UserPlus, Video, ImageIcon, Eye } from "lucide-react"
 
 const mockActivities = [
   {
@@ -81,158 +80,118 @@ const mockActivities = [
     },
     time: "5時間前",
   },
-  {
-    id: 7,
-    type: "view",
-    user: { name: "前田 航", avatar: "/japanese-man-3.jpg" },
-    action: "写真を閲覧しました",
-    content: {
-      type: "image",
-      title: "卒業式の集合写真",
-      school: "東京大学",
-    },
-    time: "8時間前",
-  },
-  {
-    id: 8,
-    type: "like",
-    user: { name: "清水 真理", avatar: "/japanese-woman-4.jpg" },
-    action: "写真にいいねしました",
-    content: {
-      type: "image",
-      title: "修学旅行 in 京都",
-      school: "桜ヶ丘高校",
-    },
-    time: "12時間前",
-  },
 ]
 
 const getActivityIcon = (type: string) => {
   switch (type) {
     case "upload":
-      return <Upload className="h-4 w-4" />
+      return <Upload className="h-3.5 w-3.5" />
     case "like":
-      return <Heart className="h-4 w-4 fill-destructive text-destructive" />
+      return <Heart className="h-3.5 w-3.5" />
     case "comment":
-      return <MessageCircle className="h-4 w-4" />
+      return <MessageCircle className="h-3.5 w-3.5" />
     case "join":
-      return <UserPlus className="h-4 w-4" />
+      return <UserPlus className="h-3.5 w-3.5" />
     case "view":
-      return <Eye className="h-4 w-4" />
+      return <Eye className="h-3.5 w-3.5" />
     default:
-      return <Calendar className="h-4 w-4" />
-  }
-}
-
-const getActivityColor = (type: string) => {
-  switch (type) {
-    case "upload":
-      return "bg-primary/10 text-primary"
-    case "like":
-      return "bg-destructive/10 text-destructive"
-    case "comment":
-      return "bg-accent/10 text-accent"
-    case "join":
-      return "bg-emerald-500/10 text-emerald-600"
-    case "view":
-      return "bg-blue-500/10 text-blue-600"
-    default:
-      return "bg-muted text-muted-foreground"
+      return <Eye className="h-3.5 w-3.5" />
   }
 }
 
 export function ActivityTimeline() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-balance mb-2">最新の動き</h2>
-        <p className="text-muted-foreground text-sm">クラスメイトの最近の活動やアップロード</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">Recent activity</p>
+        <h2 className="text-2xl font-serif">最新の動き</h2>
       </div>
 
-      <div className="space-y-3">
-        {mockActivities.map((activity) => (
-          <Card key={activity.id} className="hover:shadow-md transition-shadow">
-            <CardContent className="p-4">
-              <div className="flex gap-4">
-                {/* Activity Icon */}
-                <div
-                  className={`flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center ${getActivityColor(activity.type)}`}
-                >
+      <div className="space-y-1">
+        {mockActivities.map((activity, index) => (
+          <div 
+            key={activity.id} 
+            className="group relative py-6 hover:bg-secondary/30 -mx-4 px-4 rounded-lg transition-colors"
+          >
+            {/* Timeline line */}
+            {index !== mockActivities.length - 1 && (
+              <div className="absolute left-[26px] top-16 bottom-0 w-px bg-border" />
+            )}
+            
+            <div className="flex gap-4">
+              {/* Avatar with icon overlay */}
+              <div className="relative flex-shrink-0">
+                <Avatar className="h-10 w-10 border border-border">
+                  <AvatarImage src={activity.user.avatar || "/placeholder.svg"} />
+                  <AvatarFallback className="text-xs">{activity.user.name[0]}</AvatarFallback>
+                </Avatar>
+                <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-background border border-border flex items-center justify-center">
                   {getActivityIcon(activity.type)}
                 </div>
+              </div>
 
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <Avatar className="h-6 w-6 flex-shrink-0">
-                        <AvatarImage src={activity.user.avatar || "/placeholder.svg"} />
-                        <AvatarFallback>{activity.user.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0">
-                        <p className="text-sm">
-                          <span className="font-semibold">{activity.user.name}</span>
-                          <span className="text-muted-foreground ml-1">{activity.action}</span>
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-xs text-muted-foreground whitespace-nowrap">{activity.time}</span>
-                  </div>
+              {/* Content */}
+              <div className="flex-1 min-w-0 space-y-3">
+                <div className="flex items-start justify-between gap-4">
+                  <p className="text-sm">
+                    <span className="font-medium">{activity.user.name}</span>
+                    <span className="text-muted-foreground ml-1.5">{activity.action}</span>
+                  </p>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">{activity.time}</span>
+                </div>
 
-                  {/* Activity Content */}
-                  {activity.content && (
-                    <div className="ml-8 mt-2">
-                      {activity.type === "join" ? (
-                        <Badge variant="secondary" className="gap-1">
-                          <UserPlus className="h-3 w-3" />
-                          {activity.content.school}
-                        </Badge>
+                {/* Activity Content */}
+                {activity.content && activity.type !== "join" && (
+                  <div className="p-4 bg-card border border-border rounded-lg space-y-3">
+                    <div className="flex items-center gap-2 text-sm">
+                      {activity.content.type === "video" ? (
+                        <Video className="h-4 w-4 text-muted-foreground" />
                       ) : (
-                        <div className="bg-muted/50 rounded-lg p-3 space-y-2">
-                          <div className="flex items-center gap-2">
-                            {activity.content.type === "video" ? (
-                              <Video className="h-4 w-4 text-muted-foreground" />
-                            ) : (
-                              <ImageIcon className="h-4 w-4 text-muted-foreground" />
-                            )}
-                            <span className="font-medium text-sm">{activity.content.title}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <Badge variant="outline" className="text-xs">
-                              {activity.content.school}
-                            </Badge>
-                            {activity.engagement && (
-                              <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                                <span className="flex items-center gap-1">
-                                  <Eye className="h-3 w-3" />
-                                  {activity.engagement.views}
-                                </span>
-                                <span className="flex items-center gap-1">
-                                  <Heart className="h-3 w-3" />
-                                  {activity.engagement.likes}
-                                </span>
-                                {activity.engagement.comments !== undefined && (
-                                  <span className="flex items-center gap-1">
-                                    <MessageCircle className="h-3 w-3" />
-                                    {activity.engagement.comments}
-                                  </span>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                          {activity.content.comment && (
-                            <p className="text-sm text-foreground mt-2 pl-2 border-l-2 border-primary/30">
-                              {activity.content.comment}
-                            </p>
+                        <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                      )}
+                      <span className="font-medium">{activity.content.title}</span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary" className="text-xs font-normal rounded-full">
+                        {activity.content.school}
+                      </Badge>
+                      {activity.engagement && (
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Eye className="h-3 w-3" />
+                            {activity.engagement.views}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Heart className="h-3 w-3" />
+                            {activity.engagement.likes}
+                          </span>
+                          {activity.engagement.comments !== undefined && (
+                            <span className="flex items-center gap-1">
+                              <MessageCircle className="h-3 w-3" />
+                              {activity.engagement.comments}
+                            </span>
                           )}
                         </div>
                       )}
                     </div>
-                  )}
-                </div>
+                    
+                    {activity.content.comment && (
+                      <p className="text-sm text-foreground pl-3 border-l-2 border-border">
+                        {activity.content.comment}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {activity.type === "join" && activity.content && (
+                  <Badge variant="secondary" className="text-xs font-normal rounded-full">
+                    {activity.content.school}
+                  </Badge>
+                )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
     </div>

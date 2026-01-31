@@ -1,13 +1,13 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Users, Link2 } from "lucide-react"
+import { Users, Link2, ArrowUpRight } from "lucide-react"
 
 const connections = [
   {
-    school: "東京大学 (2021年卒業)",
+    school: "東京大学",
+    year: "2021年卒業",
     members: [
       { name: "山田 花子", avatar: "/japanese-woman.png", mutualViews: 12 },
       { name: "木村 梨花", avatar: "/japanese-woman.png", mutualViews: 8 },
@@ -16,7 +16,8 @@ const connections = [
     ],
   },
   {
-    school: "都立高校 (2017年卒業)",
+    school: "都立高校",
+    year: "2017年卒業",
     members: [
       { name: "佐藤 健", avatar: "/japanese-man.png", mutualViews: 23 },
       { name: "鈴木 美咲", avatar: "/japanese-woman.png", mutualViews: 19 },
@@ -25,7 +26,8 @@ const connections = [
     ],
   },
   {
-    school: "青葉中学校 (2014年卒業)",
+    school: "青葉中学校",
+    year: "2014年卒業",
     members: [
       { name: "前田 航", avatar: "/japanese-boy.jpg", mutualViews: 7 },
       { name: "清水 真理", avatar: "/japanese-girl.jpg", mutualViews: 9 },
@@ -36,58 +38,67 @@ const connections = [
 
 export function ConnectionGraph() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-balance mb-2">つながりマップ</h2>
-        <p className="text-muted-foreground text-sm">同じ写真や動画を見たクラスメイトとのつながりを可視化</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">Your network</p>
+        <h2 className="text-2xl font-serif">つながりマップ</h2>
       </div>
 
-      {connections.map((group, idx) => (
-        <Card key={idx}>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-lg">{group.school}</CardTitle>
-                <CardDescription className="flex items-center gap-1 mt-1">
-                  <Users className="h-3 w-3" />
-                  {group.members.length}人のつながり
-                </CardDescription>
+      <div className="space-y-6">
+        {connections.map((group, idx) => (
+          <div key={idx} className="border border-border rounded-lg overflow-hidden">
+            {/* Header */}
+            <div className="p-5 border-b border-border bg-secondary/30">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium">{group.school}</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">{group.year}</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Badge variant="secondary" className="rounded-full text-xs font-normal">
+                    <Users className="h-3 w-3 mr-1.5" />
+                    {group.members.length}
+                  </Badge>
+                  <Badge variant="secondary" className="rounded-full text-xs font-normal">
+                    {group.members.reduce((sum, m) => sum + m.mutualViews, 0)} shared
+                  </Badge>
+                </div>
               </div>
-              <Badge variant="secondary">{group.members.reduce((sum, m) => sum + m.mutualViews, 0)} 共通閲覧</Badge>
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
+
+            {/* Members */}
+            <div className="divide-y divide-border">
               {group.members.map((member, memberIdx) => (
                 <div
                   key={memberIdx}
-                  className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
+                  className="group p-4 flex items-center justify-between hover:bg-secondary/20 transition-colors cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
+                    <Avatar className="h-10 w-10 border border-border">
                       <AvatarImage src={member.avatar || "/placeholder.svg"} />
-                      <AvatarFallback>{member.name[0]}</AvatarFallback>
+                      <AvatarFallback className="text-xs">{member.name[0]}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-medium">{member.name}</div>
-                      <div className="text-xs text-muted-foreground flex items-center gap-1">
+                      <p className="font-medium text-sm">{member.name}</p>
+                      <p className="text-xs text-muted-foreground flex items-center gap-1">
                         <Link2 className="h-3 w-3" />
-                        {member.mutualViews}個の共通の思い出
-                      </div>
+                        {member.mutualViews} shared memories
+                      </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-sm font-semibold text-primary">
-                      {Math.round((member.mutualViews / 25) * 100)}%
+                  <div className="flex items-center gap-4">
+                    <div className="text-right">
+                      <p className="text-sm font-medium">{Math.round((member.mutualViews / 25) * 100)}%</p>
+                      <p className="text-xs text-muted-foreground">connection</p>
                     </div>
-                    <div className="text-xs text-muted-foreground">つながり度</div>
+                    <ArrowUpRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
-      ))}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

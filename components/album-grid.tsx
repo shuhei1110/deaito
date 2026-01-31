@@ -1,12 +1,10 @@
 "use client"
 
 import type React from "react"
-
-import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Eye, Heart, MessageCircle, Calendar, Video, ImageIcon } from "lucide-react"
+import { Eye, Heart, MessageCircle, Video, ImageIcon, Plus } from "lucide-react"
 import { useState } from "react"
 
 const mockMedia = [
@@ -104,109 +102,105 @@ export function AlbumGrid() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Upload Section */}
       <div className="flex flex-col sm:flex-row gap-4">
-        <Card className="flex-1 bg-gradient-to-br from-primary/10 to-accent/10 border-2 border-dashed border-primary/50 hover:border-primary transition-colors cursor-pointer group">
-          <CardContent className="p-6 flex flex-col items-center justify-center text-center gap-3">
-            <div className="bg-primary/20 p-4 rounded-full group-hover:scale-110 transition-transform">
-              <ImageIcon className="h-8 w-8 text-primary" />
-            </div>
-            <div>
-              <h3 className="font-bold text-lg mb-1">写真をアップロード</h3>
-              <p className="text-sm text-muted-foreground">クリックして思い出の写真を共有</p>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="flex-1 p-8 border-2 border-dashed border-border rounded-lg hover:border-foreground/30 transition-colors cursor-pointer group flex flex-col items-center justify-center text-center gap-3">
+          <div className="p-3 rounded-full bg-secondary group-hover:bg-foreground group-hover:text-background transition-colors">
+            <ImageIcon className="h-6 w-6" />
+          </div>
+          <div>
+            <p className="font-medium text-sm">Upload Photo</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Share your memories</p>
+          </div>
+        </div>
 
-        <Card className="flex-1 bg-gradient-to-br from-accent/10 to-primary/10 border-2 border-dashed border-accent/50 hover:border-accent transition-colors cursor-pointer group">
-          <CardContent className="p-6 flex flex-col items-center justify-center text-center gap-3">
-            <div className="bg-accent/20 p-4 rounded-full group-hover:scale-110 transition-transform">
-              <Video className="h-8 w-8 text-accent" />
-            </div>
-            <div>
-              <h3 className="font-bold text-lg mb-1">動画をアップロード</h3>
-              <p className="text-sm text-muted-foreground">クリックして思い出の動画を共有</p>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="flex-1 p-8 border-2 border-dashed border-border rounded-lg hover:border-foreground/30 transition-colors cursor-pointer group flex flex-col items-center justify-center text-center gap-3">
+          <div className="p-3 rounded-full bg-secondary group-hover:bg-foreground group-hover:text-background transition-colors">
+            <Video className="h-6 w-6" />
+          </div>
+          <div>
+            <p className="font-medium text-sm">Upload Video</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Share video moments</p>
+          </div>
+        </div>
       </div>
 
+      {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-balance mb-2">みんなの思い出</h2>
-        <p className="text-muted-foreground text-sm">クラスメイトがアップロードした写真・動画</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">Shared memories</p>
+        <h2 className="text-2xl font-serif">みんなの思い出</h2>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      {/* Media Grid */}
+      <div className="grid md:grid-cols-2 gap-6">
         {mediaItems.map((media) => (
-          <Card key={media.id} className="overflow-hidden hover:shadow-lg transition-all hover:border-primary/50">
-            <div className="relative aspect-video overflow-hidden bg-muted cursor-pointer group">
+          <div key={media.id} className="group cursor-pointer">
+            {/* Image */}
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-muted mb-4">
               <img
                 src={media.url || "/placeholder.svg"}
                 alt={media.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
               {media.type === "video" && (
-                <Badge className="absolute top-3 right-3 bg-black/70 backdrop-blur-sm">
+                <Badge className="absolute top-3 right-3 bg-foreground/80 text-background backdrop-blur-sm rounded-full text-xs">
                   <Video className="h-3 w-3 mr-1" />
-                  動画
+                  Video
                 </Badge>
               )}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent p-4">
-                <h3 className="font-semibold text-white text-balance">{media.title}</h3>
-              </div>
             </div>
-            <CardContent className="p-4 space-y-3">
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <Badge variant="outline">{media.school}</Badge>
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-3 w-3" />
-                  {media.date}
-                </div>
+
+            {/* Content */}
+            <div className="space-y-3">
+              <div className="flex items-start justify-between gap-4">
+                <h3 className="font-medium">{media.title}</h3>
+                <span className="text-xs text-muted-foreground whitespace-nowrap">{media.date}</span>
               </div>
 
               <div className="flex items-center gap-2">
-                <Avatar className="h-6 w-6">
+                <Avatar className="h-5 w-5 border border-border">
                   <AvatarImage src={media.uploadedBy.avatar || "/placeholder.svg"} />
-                  <AvatarFallback>{media.uploadedBy.name[0]}</AvatarFallback>
+                  <AvatarFallback className="text-[10px]">{media.uploadedBy.name[0]}</AvatarFallback>
                 </Avatar>
-                <span className="text-sm text-muted-foreground">{media.uploadedBy.name}</span>
+                <span className="text-xs text-muted-foreground">{media.uploadedBy.name}</span>
               </div>
 
-              <div className="flex items-center gap-4 pt-2">
+              <div className="flex items-center gap-4 pt-1">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 gap-2 hover:text-destructive"
+                  className="h-7 px-2 gap-1.5 text-xs"
                   onClick={(e) => handleLike(media.id, e)}
                 >
-                  <Heart className={`h-4 w-4 ${media.liked ? "fill-destructive text-destructive" : ""}`} />
-                  <span className="text-sm">{media.likes}</span>
+                  <Heart className={`h-3.5 w-3.5 ${media.liked ? "fill-accent text-accent" : ""}`} />
+                  {media.likes}
                 </Button>
-                <Button variant="ghost" size="sm" className="h-8 gap-2">
-                  <MessageCircle className="h-4 w-4" />
-                  <span className="text-sm">{media.comments}</span>
+                <Button variant="ghost" size="sm" className="h-7 px-2 gap-1.5 text-xs">
+                  <MessageCircle className="h-3.5 w-3.5" />
+                  {media.comments}
                 </Button>
-                <div className="flex items-center gap-1 text-sm text-muted-foreground ml-auto">
-                  <Eye className="h-4 w-4" />
+                <span className="flex items-center gap-1.5 text-xs text-muted-foreground ml-auto">
+                  <Eye className="h-3.5 w-3.5" />
                   {media.views}
-                </div>
+                </span>
               </div>
 
               {media.viewers.length > 0 && (
                 <div className="pt-3 border-t border-border">
-                  <p className="text-xs text-muted-foreground mb-2">最近閲覧した人</p>
-                  <div className="space-y-1">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Recent viewers</p>
+                  <div className="space-y-1.5">
                     {media.viewers.slice(0, 3).map((viewer, idx) => (
                       <div key={idx} className="flex items-center justify-between text-xs">
-                        <span className="text-foreground">{viewer.name}</span>
+                        <span>{viewer.name}</span>
                         <span className="text-muted-foreground">{viewer.time}</span>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
     </div>
