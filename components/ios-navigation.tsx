@@ -18,7 +18,7 @@ interface TopBarProps {
 export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopBarProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 ios-glass border-b border-foreground/5">
-      <div className="flex items-center justify-between px-4 h-14 max-w-lg mx-auto">
+      <div className="flex items-center justify-between px-4 h-14 max-w-2xl mx-auto">
         {/* Left: Logo */}
         <Link href="/" className="flex items-center">
           <h1 className="text-xl font-serif font-light tracking-wide italic">deaito</h1>
@@ -80,7 +80,7 @@ export function BreadcrumbBar({ items }: BreadcrumbBarProps) {
 
   return (
     <div className="fixed top-14 left-0 right-0 z-40 ios-glass-subtle border-b border-foreground/5">
-      <div className="flex items-center gap-2 px-4 h-10 max-w-lg mx-auto overflow-x-auto">
+      <div className="flex items-center gap-2 px-4 h-10 max-w-2xl mx-auto overflow-x-auto">
         {items.map((item, index) => (
           <div key={item.label} className="flex items-center gap-2 shrink-0">
             {index > 0 && (
@@ -117,7 +117,7 @@ export function BottomBar() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 ios-glass border-t border-foreground/5">
-      <div className="flex items-center justify-around h-20 max-w-lg mx-auto pb-4">
+      <div className="flex items-center justify-around h-20 max-w-2xl mx-auto pb-4">
         {navItems.map((item) => {
           const isActive = pathname === item.href || 
             (item.href !== "/" && pathname.startsWith(item.href))
@@ -183,7 +183,7 @@ export function IOSLayout({
       <BreadcrumbBar items={breadcrumbs} />
       
       <main className={cn(
-        "max-w-lg mx-auto px-4 pb-24",
+        "max-w-2xl mx-auto px-4 pb-24",
         hasBreadcrumbs ? "pt-28" : "pt-18"
       )}>
         {children}
