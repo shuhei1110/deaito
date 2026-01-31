@@ -1,10 +1,9 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Search, Plus, Users, Calendar, MapPin, BookOpen, ChevronRight } from "lucide-react"
+import { Search, Plus, Users, Calendar, MapPin, ChevronRight, ArrowLeft } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
 import {
@@ -25,7 +24,6 @@ export function MyAlbums() {
   const [newAlbumLocation, setNewAlbumLocation] = useState("")
   const [showSearch, setShowSearch] = useState(false)
 
-  // 所属アルバム
   const myAlbums = [
     {
       id: "1",
@@ -47,7 +45,6 @@ export function MyAlbums() {
     },
   ]
 
-  // 検索可能なアルバム
   const searchableAlbums = [
     {
       id: 3,
@@ -80,179 +77,176 @@ export function MyAlbums() {
   )
 
   return (
-    <div className="space-y-6">
-      {/* 所属アルバム */}
-      {!showSearch && (
+    <div className="space-y-4">
+      {!showSearch ? (
         <>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5" />
-                所属アルバム
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {myAlbums.map((album) => (
-                <Link key={album.id} href={`/album/${album.id}`}>
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer border-2 hover:border-primary/50">
-                    <CardContent className="pt-6">
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex-1 space-y-2">
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-bold text-lg">{album.name}</h4>
-                            {album.newPhotos > 0 && (
-                              <Badge variant="default" className="text-xs">
-                                新着 {album.newPhotos}件
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            <Badge variant="secondary" className="gap-1">
-                              <Calendar className="h-3 w-3" />
-                              {album.year}年卒業
-                            </Badge>
-                            <Badge variant="secondary" className="gap-1">
-                              <MapPin className="h-3 w-3" />
-                              {album.location}
-                            </Badge>
-                            <Badge variant="secondary" className="gap-1">
-                              <Users className="h-3 w-3" />
-                              {album.members}人
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground">最終更新: {album.recentActivity}</p>
-                        </div>
-                        <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </CardContent>
-          </Card>
-
-          {/* アルバムを探すボタン */}
-          <Button onClick={() => setShowSearch(true)} variant="outline" className="w-full gap-2" size="lg">
-            <Search className="h-4 w-4" />
-            アルバムを探す・作る
-          </Button>
-        </>
-      )}
-
-      {/* アルバムを探す画面 */}
-      {showSearch && (
-        <>
-          <div className="flex items-center gap-2 mb-4">
-            <Button onClick={() => setShowSearch(false)} variant="ghost" size="sm">
-              ← 戻る
-            </Button>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>アルバムを探す・作る</span>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button size="sm" className="gap-2">
-                      <Plus className="h-4 w-4" />
-                      新規作成
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[500px]">
-                    <DialogHeader>
-                      <DialogTitle>新しいアルバムを作成</DialogTitle>
-                      <DialogDescription>
-                        卒業した学校やサークルのアルバムを作成して、仲間を招待しましょう
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid gap-2">
-                        <Label htmlFor="name">アルバム名</Label>
-                        <Input
-                          id="name"
-                          placeholder="例: 桜丘高校 2015年卒業"
-                          value={newAlbumName}
-                          onChange={(e) => setNewAlbumName(e.target.value)}
-                        />
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="year">卒業年</Label>
-                        <Input
-                          id="year"
-                          type="number"
-                          placeholder="例: 2015"
-                          value={newAlbumYear}
-                          onChange={(e) => setNewAlbumYear(e.target.value)}
-                        />
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="location">所在地</Label>
-                        <Input
-                          id="location"
-                          placeholder="例: 東京都渋谷区"
-                          value={newAlbumLocation}
-                          onChange={(e) => setNewAlbumLocation(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <DialogFooter>
-                      <Button type="submit" className="gap-2">
-                        <Plus className="h-4 w-4" />
-                        作成する
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="学校名、卒業年、地域で検索..."
-                  className="pl-10"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">検索結果 ({filteredAlbums.length}件)</h3>
-            {filteredAlbums.map((album) => (
-              <Card key={album.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="pt-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="space-y-3 flex-1">
-                      <div>
-                        <h4 className="font-bold text-lg mb-2">{album.name}</h4>
-                        <div className="flex flex-wrap gap-2">
-                          <Badge variant="secondary" className="gap-1">
-                            <Calendar className="h-3 w-3" />
-                            {album.year}
-                          </Badge>
-                          <Badge variant="secondary" className="gap-1">
-                            <MapPin className="h-3 w-3" />
-                            {album.location}
-                          </Badge>
-                          <Badge variant="secondary" className="gap-1">
-                            <Users className="h-3 w-3" />
-                            {album.members}人
-                          </Badge>
-                        </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground">最終更新: {album.recentActivity}</p>
-                    </div>
-                    <Button variant="default" className="gap-2">
-                      参加する
-                    </Button>
+          {/* Album List */}
+          <div className="ios-card overflow-hidden">
+            {myAlbums.map((album, index) => (
+              <Link key={album.id} href={`/album/${album.id}`}>
+                <div className={`flex items-center gap-3 p-4 active:bg-foreground/5 transition-colors ${
+                  index !== myAlbums.length - 1 ? "border-b border-foreground/5" : ""
+                }`}>
+                  {/* Album Icon */}
+                  <div className="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center flex-shrink-0">
+                    <span className="text-lg">{album.name.charAt(0)}</span>
                   </div>
-                </CardContent>
-              </Card>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-sm font-medium truncate">{album.name}</h3>
+                      {album.newPhotos > 0 && (
+                        <Badge className="rounded-full px-1.5 py-0 text-[10px] bg-accent text-accent-foreground h-4">
+                          +{album.newPhotos}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 text-[11px] text-foreground/40">
+                      <span className="flex items-center gap-1">
+                        <Users className="h-3 w-3" />
+                        {album.members}
+                      </span>
+                      <span>{album.year}</span>
+                      <span>{album.location}</span>
+                    </div>
+                  </div>
+
+                  <ChevronRight className="h-4 w-4 text-foreground/20 flex-shrink-0" />
+                </div>
+              </Link>
             ))}
           </div>
+
+          {/* Find Album Button */}
+          <button 
+            type="button"
+            onClick={() => setShowSearch(true)} 
+            className="ios-card w-full p-4 flex items-center justify-center gap-2 text-foreground/50 active:scale-[0.98] transition-transform"
+          >
+            <Search className="h-4 w-4" />
+            <span className="text-sm">アルバムを探す・作成する</span>
+          </button>
+        </>
+      ) : (
+        <>
+          {/* Search View */}
+          <button 
+            type="button"
+            onClick={() => setShowSearch(false)} 
+            className="flex items-center gap-2 text-accent text-sm mb-4"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            戻る
+          </button>
+
+          {/* Search Input */}
+          <div className="ios-card p-3 flex items-center gap-3">
+            <Search className="h-4 w-4 text-foreground/30" />
+            <Input
+              placeholder="学校名、卒業年で検索..."
+              className="border-0 bg-transparent p-0 h-auto text-sm focus-visible:ring-0"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          {/* Create New Album */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <button 
+                type="button"
+                className="ios-card w-full p-4 flex items-center gap-3 text-accent active:scale-[0.98] transition-transform"
+              >
+                <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                  <Plus className="h-5 w-5" />
+                </div>
+                <span className="text-sm font-medium">新しいアルバムを作成</span>
+              </button>
+            </DialogTrigger>
+            <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-[400px] rounded-2xl border-0 ios-card">
+              <DialogHeader>
+                <DialogTitle className="text-lg font-medium">新しいアルバム</DialogTitle>
+                <DialogDescription className="text-foreground/50 text-sm">
+                  卒業した学校のアルバムを作成しましょう
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="name" className="text-xs text-foreground/50">アルバム名</Label>
+                  <Input
+                    id="name"
+                    placeholder="例: 桜丘高校 2015年卒業"
+                    value={newAlbumName}
+                    onChange={(e) => setNewAlbumName(e.target.value)}
+                    className="ios-card border-0"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="grid gap-2">
+                    <Label htmlFor="year" className="text-xs text-foreground/50">卒業年</Label>
+                    <Input
+                      id="year"
+                      type="number"
+                      placeholder="2015"
+                      value={newAlbumYear}
+                      onChange={(e) => setNewAlbumYear(e.target.value)}
+                      className="ios-card border-0"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="location" className="text-xs text-foreground/50">地域</Label>
+                    <Input
+                      id="location"
+                      placeholder="東京都"
+                      value={newAlbumLocation}
+                      onChange={(e) => setNewAlbumLocation(e.target.value)}
+                      className="ios-card border-0"
+                    />
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-xl h-11">
+                  作成する
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Search Results */}
+          {searchQuery && (
+            <div className="ios-card overflow-hidden mt-4">
+              <div className="px-4 py-2 text-[11px] text-foreground/40 uppercase tracking-wider">
+                検索結果 ({filteredAlbums.length})
+              </div>
+              {filteredAlbums.map((album, index) => (
+                <div 
+                  key={album.id} 
+                  className={`flex items-center gap-3 p-4 ${
+                    index !== filteredAlbums.length - 1 ? "border-b border-foreground/5" : ""
+                  }`}
+                >
+                  <div className="w-10 h-10 rounded-xl bg-secondary/50 flex items-center justify-center flex-shrink-0 text-sm">
+                    {album.name.charAt(0)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-medium truncate">{album.name}</h3>
+                    <div className="flex items-center gap-2 text-[11px] text-foreground/40 mt-0.5">
+                      <span>{album.year}</span>
+                      <span>{album.members}人</span>
+                    </div>
+                  </div>
+                  <Button 
+                    size="sm" 
+                    className="rounded-full bg-accent/10 text-accent hover:bg-accent hover:text-accent-foreground text-xs h-8 px-4"
+                  >
+                    参加
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>

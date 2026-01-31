@@ -1,8 +1,7 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Mail, Sparkles } from "lucide-react"
+import { Sparkles, ChevronRight } from "lucide-react"
 import { useState } from "react"
 import { InvitationDetail } from "@/components/invitation-detail"
 
@@ -33,59 +32,49 @@ export function InvitationLetters() {
   return (
     <>
       <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <div className="bg-primary/10 p-2 rounded-lg">
-            <Mail className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold">届いた招待状</h2>
-            <p className="text-sm text-muted-foreground">AIがあなたにぴったりの同窓会を見つけました</p>
-          </div>
-        </div>
+        {invitations.map((invitation, index) => (
+          <button
+            type="button"
+            key={invitation.id}
+            className="ios-card w-full p-4 text-left active:scale-[0.98] transition-transform duration-150"
+            onClick={() => setSelectedInvitation(invitation.id)}
+          >
+            <div className="flex items-center gap-3">
+              {/* Unread indicator */}
+              <div className="w-2.5 h-2.5 rounded-full flex-shrink-0">
+                {invitation.unread && (
+                  <div className="w-full h-full rounded-full bg-accent" />
+                )}
+              </div>
 
-        <div className="space-y-3">
-          {invitations.map((invitation) => (
-            <Card
-              key={invitation.id}
-              className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-[1.02] border-2 border-primary/20 relative overflow-hidden"
-              onClick={() => setSelectedInvitation(invitation.id)}
-            >
-              {/* Envelope Flap Effect */}
-              <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-primary/5 to-transparent" />
-
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-center gap-2">
-                      {invitation.unread && <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />}
-                      <h3 className="font-bold text-lg text-balance">{invitation.title}</h3>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Sparkles className="h-4 w-4 text-primary" />
-                      <span>{invitation.from}</span>
-                    </div>
-
-                    <p className="text-sm text-muted-foreground line-clamp-2">{invitation.preview}</p>
-
-                    <div className="flex items-center gap-2 pt-2">
-                      <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
-                        マッチ度 {invitation.matchScore}%
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">{invitation.date}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex-shrink-0">
-                    <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                      <Mail className="h-8 w-8 text-primary" />
-                    </div>
-                  </div>
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-sm font-medium truncate">{invitation.title}</h3>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                <div className="flex items-center gap-1.5 text-[11px] text-foreground/40 mb-2">
+                  <Sparkles className="h-3 w-3" />
+                  <span>{invitation.from}</span>
+                </div>
+                <p className="text-xs text-foreground/50 line-clamp-2 leading-relaxed">
+                  {invitation.preview}
+                </p>
+                <div className="flex items-center gap-3 mt-3">
+                  <Badge 
+                    variant="secondary" 
+                    className="rounded-full px-2.5 py-0.5 text-[10px] font-normal bg-accent/10 text-accent border-0"
+                  >
+                    Match {invitation.matchScore}%
+                  </Badge>
+                  <span className="text-[10px] text-foreground/30">{invitation.date}</span>
+                </div>
+              </div>
+
+              {/* Arrow */}
+              <ChevronRight className="h-4 w-4 text-foreground/20 flex-shrink-0" />
+            </div>
+          </button>
+        ))}
       </div>
 
       {/* Invitation Detail Modal */}

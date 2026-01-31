@@ -1,9 +1,9 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Heart, Briefcase, Calendar, Edit } from "lucide-react"
+import { MapPin, Briefcase, ArrowUpRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const mockUser = {
@@ -21,62 +21,81 @@ const mockUser = {
 
 export function UserProfile() {
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="bg-gradient-to-br from-primary/10 to-accent/10 border-b">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-20 w-20 border-4 border-card">
+    <Card className="overflow-hidden border-0 shadow-none bg-transparent">
+      <CardContent className="p-0">
+        {/* Profile Header */}
+        <div className="pb-8">
+          <div className="flex items-start justify-between mb-8">
+            <Avatar className="h-24 w-24 border border-border/50">
               <AvatarImage src={mockUser.avatar || "/placeholder.svg"} alt={mockUser.name} />
-              <AvatarFallback>TT</AvatarFallback>
+              <AvatarFallback className="text-xl font-serif italic">TT</AvatarFallback>
             </Avatar>
-            <div>
-              <CardTitle className="text-2xl">{mockUser.name}</CardTitle>
-              <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                <Calendar className="h-3 w-3" />
-                {mockUser.joinDate}参加
-              </p>
-            </div>
+            <Button variant="ghost" size="sm" className="text-[10px] uppercase tracking-[0.15em] text-foreground/50 hover:text-foreground hover:bg-transparent">
+              Edit
+              <ArrowUpRight className="h-3 w-3 ml-1" />
+            </Button>
           </div>
-          <Button size="icon" variant="ghost">
-            <Edit className="h-4 w-4" />
-          </Button>
+          
+          <div className="space-y-2">
+            <h2 className="text-2xl font-serif font-light">{mockUser.name}</h2>
+            <p className="text-[10px] text-foreground/40 uppercase tracking-[0.15em]">
+              Member since {mockUser.joinDate}
+            </p>
+          </div>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-6 pt-6">
+
+        {/* Divider */}
+        <div className="border-t border-border/30" />
+
         {/* Basic Info */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 text-sm">
-            <Briefcase className="h-4 w-4 text-muted-foreground" />
+        <div className="py-6 space-y-4">
+          <div className="flex items-center gap-3 text-sm text-foreground/70">
+            <Briefcase className="h-4 w-4 text-foreground/40" />
             <span>{mockUser.occupation}</span>
           </div>
-          <div className="flex items-center gap-2 text-sm">
-            <MapPin className="h-4 w-4 text-muted-foreground" />
+          <div className="flex items-center gap-3 text-sm text-foreground/70">
+            <MapPin className="h-4 w-4 text-foreground/40" />
             <span>{mockUser.location}</span>
           </div>
         </div>
 
+        {/* Divider */}
+        <div className="border-t border-border/30" />
+
         {/* Schools */}
-        <div className="space-y-2">
-          <h3 className="font-semibold text-sm text-muted-foreground">所属アルバム</h3>
-          <div className="space-y-2">
+        <div className="py-6">
+          <p className="text-[10px] uppercase tracking-[0.15em] text-foreground/40 mb-5">Albums</p>
+          <div className="space-y-3">
             {mockUser.schools.map((school) => (
-              <div key={school.id} className="p-3 bg-muted/50 rounded-lg">
-                <div className="font-medium text-sm">{school.name}</div>
-                <div className="text-xs text-muted-foreground mt-1">{school.year}</div>
+              <div 
+                key={school.id} 
+                className="group p-4 bg-card/50 border border-border/30 rounded-lg hover:border-border/60 transition-all cursor-pointer"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm">{school.name}</p>
+                    <p className="text-[11px] text-foreground/40 mt-1">{school.year}</p>
+                  </div>
+                  <ArrowUpRight className="h-4 w-4 text-foreground/30 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
               </div>
             ))}
           </div>
         </div>
 
+        {/* Divider */}
+        <div className="border-t border-border/30" />
+
         {/* Interests */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Heart className="h-4 w-4 text-muted-foreground" />
-            <h3 className="font-semibold text-sm text-muted-foreground">趣味・興味</h3>
-          </div>
+        <div className="py-6">
+          <p className="text-[10px] uppercase tracking-[0.15em] text-foreground/40 mb-5">Interests</p>
           <div className="flex flex-wrap gap-2">
             {mockUser.interests.map((interest, index) => (
-              <Badge key={index} variant="secondary" className="cursor-pointer hover:bg-primary/20">
+              <Badge 
+                key={index} 
+                variant="secondary" 
+                className="rounded-full px-3 py-1.5 text-xs font-normal bg-card/50 border border-border/30 text-foreground/70 hover:bg-foreground hover:text-background hover:border-foreground transition-all cursor-pointer"
+              >
                 {interest}
               </Badge>
             ))}

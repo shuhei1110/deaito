@@ -1,76 +1,52 @@
 "use client"
 
-import { UserProfile } from "@/components/user-profile"
+import { useState, useEffect } from "react"
+import { IOSLayout } from "@/components/ios-navigation"
 import { InvitationLetters } from "@/components/invitation-letters"
-import { MyAlbums } from "@/components/my-albums"
-import { ActivityTimeline } from "@/components/activity-timeline"
-import { Sparkles } from "lucide-react"
-import Link from "next/link"
-import { useState } from "react"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
+import { SplashAnimation } from "@/components/splash-animation"
 
 export default function Home() {
-  const [newInvitationsCount] = useState(2)
+  const [showSplash, setShowSplash] = useState(true)
+  const [contentVisible, setContentVisible] = useState(false)
+
+  useEffect(() => {
+    // Check if splash was already shown in this session
+    const hasSeenSplash = sessionStorage.getItem("deaito-splash-shown")
+    if (hasSeenSplash) {
+      setShowSplash(false)
+      setContentVisible(true)
+    }
+  }, [])
+
+  const handleSplashComplete = () => {
+    sessionStorage.setItem("deaito-splash-shown", "true")
+    setShowSplash(false)
+    // Small delay to start content fade in
+    setTimeout(() => setContentVisible(true), 100)
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background">
-      {/* Header */}
-      <header className="border-b border-border/50 bg-card/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="bg-primary/10 p-2 rounded-xl">
-                <Sparkles className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-balance">卒業アルバム/Reunion</h1>
-                <p className="text-sm text-muted-foreground">思い出をつなぐ、新しい出会い</p>
-              </div>
-            </Link>
-            <div className="text-sm text-muted-foreground">デモモード</div>
-          </div>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Left Column - User Profile */}
-          <div className="lg:col-span-1">
-            <UserProfile />
+    <>
+      {showSplash && <SplashAnimation onComplete={handleSplashComplete} />}
+      
+      <div className={`transition-opacity duration-700 ${contentVisible ? "opacity-100" : "opacity-0"}`}>
+        <IOSLayout breadcrumbs={[{ label: "ホーム" }]}>
+          {/* Hero Section */}
+          <div className="py-8 text-center">
+            <h2 className="text-2xl font-serif font-light leading-tight mb-3 text-balance italic">
+              終わりのない「つながり」を
+            </h2>
+            <p className="text-foreground/50 leading-relaxed text-xs max-w-xs mx-auto">
+              AIエージェントと共に、人間関係を円滑にしていく新しい卒業アルバム。
+            </p>
           </div>
 
-          {/* Main Content - Tabs for different sections */}
-          <div className="lg:col-span-2">
-            <Tabs defaultValue="invitations" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 mb-6">
-                <TabsTrigger value="invitations" className="relative">
-                  招待状
-                  {newInvitationsCount > 0 && (
-                    <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center rounded-full bg-destructive text-destructive-foreground">
-                      {newInvitationsCount}
-                    </Badge>
-                  )}
-                </TabsTrigger>
-                <TabsTrigger value="albums">マイアルバム</TabsTrigger>
-                <TabsTrigger value="timeline">タイムライン</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="invitations" className="mt-0">
-                <InvitationLetters />
-              </TabsContent>
-
-              <TabsContent value="albums" className="mt-0">
-                <MyAlbums />
-              </TabsContent>
-
-              <TabsContent value="timeline" className="mt-0">
-                <ActivityTimeline />
-              </TabsContent>
-            </Tabs>
+          {/* Content */}
+          <div className="space-y-4">
+            <InvitationLetters />
           </div>
-        </div>
-      </main>
-    </div>
+        </IOSLayout>
+      </div>
+    </>
   )
 }
