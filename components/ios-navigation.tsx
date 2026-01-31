@@ -136,7 +136,7 @@ export function IOSLayout({
       
       <main className={cn(
         "max-w-2xl mx-auto px-4 pb-24",
-        hasBreadcrumbs ? "pt-28" : "pt-18"
+        hasBreadcrumbs ? "pt-28" : "pt-20"
       )}>
         {children}
       </main>
