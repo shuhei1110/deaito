@@ -124,3 +124,44 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* iOS Glassmorphism */
+.ios-glass {
+  background: rgba(250, 248, 245, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+.ios-glass-subtle {
+  background: rgba(250, 248, 245, 0.6);
+  backdrop-filter: saturate(150%) blur(12px);
+  -webkit-backdrop-filter: saturate(150%) blur(12px);
+}
+
+.ios-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(44, 40, 37, 0.06);
+  border-radius: 1rem;
+}
+
+.dark .ios-glass {
+  background: rgba(26, 24, 22, 0.72);
+}
+
+.dark .ios-glass-subtle {
+  background: rgba(26, 24, 22, 0.6);
+}
+
+.dark .ios-card {
+  background: rgba(36, 33, 32, 0.7);
+  border: 1px solid rgba(245, 242, 238, 0.06);
+}
+
+/* iOS-style safe area padding */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

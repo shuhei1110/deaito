@@ -1,10 +1,10 @@
 "use client"
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Sparkles, Calendar, MapPin, Users, Clock, CheckCircle2, ImageIcon, Heart, Eye } from "lucide-react"
+import { Sparkles, Calendar, MapPin, Users, Clock, CheckCircle2, ImageIcon, Heart, Eye, X } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
 
@@ -36,8 +36,7 @@ const invitationDetails = {
   2: {
     id: 2,
     title: "東京大学 2021年卒業 ミニ同窓会",
-    reason:
-      "木村梨花さん、斎藤拓也さんがあなたの投稿「修学旅行 in 京都」に興味を示しています。最近、「旅行」「写真」が共通の話題として浮上しています。",
+    reason: "木村梨花さん、斎藤拓也さんがあなたの投稿「修学旅行 in 京都」に興味を示しています。",
     triggerPost: {
       id: "2",
       title: "修学旅行 in 京都",
@@ -73,77 +72,82 @@ export function InvitationDetail({ invitationId, onClose }: InvitationDetailProp
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto border-border/30 bg-card">
-        <DialogHeader className="space-y-4">
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-3">
-              <DialogTitle className="text-2xl font-serif font-light italic text-balance pr-8">{invitation.title}</DialogTitle>
-              <div className="flex items-center gap-2 text-[10px] text-foreground/40 uppercase tracking-[0.1em]">
-                <Sparkles className="h-3 w-3" />
-                <span>AIエージェント「つなぐくん」より</span>
-              </div>
+      <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-[420px] max-h-[85vh] overflow-y-auto rounded-2xl border-0 p-0 ios-card">
+        {/* Header */}
+        <div className="sticky top-0 z-10 ios-glass border-b border-foreground/5 px-4 py-3 flex items-center justify-between">
+          <button type="button" onClick={onClose} className="text-accent text-sm font-medium">
+            閉じる
+          </button>
+          <span className="text-xs font-medium">招待状</span>
+          <div className="w-12" />
+        </div>
+
+        <div className="px-4 pb-6 space-y-5">
+          {/* Title */}
+          <div className="pt-4 text-center">
+            <div className="inline-flex items-center gap-1.5 text-[10px] text-foreground/40 mb-3">
+              <Sparkles className="h-3 w-3" />
+              <span>AIエージェント「つなぐくん」より</span>
             </div>
-            <Badge variant="secondary" className="rounded-full text-[10px] font-normal bg-transparent border border-border/40 text-foreground/60">
+            <h2 className="text-lg font-medium text-balance">{invitation.title}</h2>
+            <Badge className="mt-3 rounded-full text-[10px] font-normal bg-accent/10 text-accent border-0">
               Match {invitation.matchScore}%
             </Badge>
           </div>
-        </DialogHeader>
 
-        <div className="space-y-8 pt-4">
           {/* Reason */}
-          <div className="p-5 bg-background/50 rounded-lg border border-border/20">
+          <div className="ios-card p-4">
             <p className="text-sm leading-relaxed text-foreground/70">{invitation.reason}</p>
           </div>
 
           {/* Trigger Post */}
-          <div className="space-y-4">
-            <p className="text-[10px] uppercase tracking-[0.15em] text-foreground/40 flex items-center gap-2">
-              <ImageIcon className="h-3 w-3" />
-              Related Post
-            </p>
+          <div className="space-y-2">
+            <p className="text-[10px] text-foreground/40 uppercase tracking-wider px-1">関連する投稿</p>
             <Link href={`/album/${invitation.triggerPost.albumId}?post=${invitation.triggerPost.id}`}>
-              <div className="p-4 rounded-lg border border-border/30 bg-background/30 hover:border-border/50 transition-all cursor-pointer">
-                <div className="flex items-center gap-4">
-                  <img
-                    src={invitation.triggerPost.thumbnail || "/placeholder.svg"}
-                    alt={invitation.triggerPost.title}
-                    className="w-16 h-16 rounded-lg object-cover"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm mb-1">{invitation.triggerPost.title}</p>
-                    <p className="text-[11px] text-foreground/40 mb-2">{invitation.triggerPost.albumName}</p>
-                    <div className="flex items-center gap-4 text-[10px] text-foreground/30">
-                      <span className="flex items-center gap-1">
-                        <Heart className="h-3 w-3" />
-                        {invitation.triggerPost.likes}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Eye className="h-3 w-3" />
-                        {invitation.triggerPost.views}
-                      </span>
-                    </div>
+              <div className="ios-card p-3 flex items-center gap-3 active:scale-[0.98] transition-transform">
+                <img
+                  src={invitation.triggerPost.thumbnail || "/placeholder.svg"}
+                  alt={invitation.triggerPost.title}
+                  className="w-14 h-14 rounded-xl object-cover"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{invitation.triggerPost.title}</p>
+                  <p className="text-[11px] text-foreground/40">{invitation.triggerPost.albumName}</p>
+                  <div className="flex items-center gap-3 mt-1 text-[10px] text-foreground/30">
+                    <span className="flex items-center gap-1">
+                      <Heart className="h-3 w-3" />
+                      {invitation.triggerPost.likes}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Eye className="h-3 w-3" />
+                      {invitation.triggerPost.views}
+                    </span>
                   </div>
                 </div>
               </div>
             </Link>
           </div>
 
-          {/* Suggested Members */}
-          <div className="space-y-4">
-            <p className="text-[10px] uppercase tracking-[0.15em] text-foreground/40 flex items-center gap-2">
-              <Users className="h-3 w-3" />
-              Attendees ({invitation.suggestedMembers.length})
+          {/* Members */}
+          <div className="space-y-2">
+            <p className="text-[10px] text-foreground/40 uppercase tracking-wider px-1">
+              参加予定 ({invitation.suggestedMembers.length}人)
             </p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="ios-card overflow-hidden">
               {invitation.suggestedMembers.map((member, idx) => (
-                <div key={idx} className="flex items-center gap-3 p-3 rounded-lg bg-background/30 border border-border/20">
-                  <Avatar className="h-10 w-10 border border-border/30">
+                <div 
+                  key={idx} 
+                  className={`flex items-center gap-3 p-3 ${
+                    idx !== invitation.suggestedMembers.length - 1 ? "border-b border-foreground/5" : ""
+                  }`}
+                >
+                  <Avatar className="h-10 w-10">
                     <AvatarImage src={member.avatar || "/placeholder.svg"} />
-                    <AvatarFallback className="text-xs font-serif italic">{member.name[0]}</AvatarFallback>
+                    <AvatarFallback className="text-xs bg-secondary">{member.name[0]}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm truncate">{member.name}</p>
-                    <p className="text-[10px] text-foreground/40 truncate">{member.interests.join(", ")}</p>
+                    <p className="text-sm font-medium">{member.name}</p>
+                    <p className="text-[10px] text-foreground/40">{member.interests.join(" / ")}</p>
                   </div>
                 </div>
               ))}
@@ -151,11 +155,11 @@ export function InvitationDetail({ invitationId, onClose }: InvitationDetailProp
           </div>
 
           {/* Common Interests */}
-          <div className="space-y-4">
-            <p className="text-[10px] uppercase tracking-[0.15em] text-foreground/40">Common Interests</p>
+          <div className="space-y-2">
+            <p className="text-[10px] text-foreground/40 uppercase tracking-wider px-1">共通の興味</p>
             <div className="flex flex-wrap gap-2">
               {invitation.commonInterests.map((interest, idx) => (
-                <Badge key={idx} variant="secondary" className="rounded-full text-xs font-normal bg-transparent border border-border/30 text-foreground/60">
+                <Badge key={idx} variant="secondary" className="rounded-full text-xs font-normal bg-secondary/50 text-foreground/60 border-0">
                   {interest}
                 </Badge>
               ))}
@@ -163,38 +167,42 @@ export function InvitationDetail({ invitationId, onClose }: InvitationDetailProp
           </div>
 
           {/* Details */}
-          <div className="space-y-4 p-5 bg-background/30 rounded-lg border border-border/20">
+          <div className="ios-card p-4 space-y-3">
             <div className="flex items-center gap-3 text-sm">
               <Calendar className="h-4 w-4 text-foreground/30" />
-              <span className="text-foreground/50">Date:</span>
               <span>{invitation.suggestedDate}</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
               <MapPin className="h-4 w-4 text-foreground/30" />
-              <span className="text-foreground/50">Venue:</span>
               <span>{invitation.suggestedVenue}</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
               <Clock className="h-4 w-4 text-foreground/30" />
-              <span className="text-foreground/50">Duration:</span>
               <span>約2時間</span>
             </div>
           </div>
 
           {/* Actions */}
           {!accepted ? (
-            <div className="flex gap-3 pt-2">
-              <Button className="flex-1 h-12 uppercase tracking-[0.15em] text-[10px] bg-foreground text-background hover:bg-foreground/90" onClick={() => setAccepted(true)}>
-                Accept Invitation
+            <div className="space-y-2 pt-2">
+              <Button 
+                className="w-full h-12 bg-accent text-accent-foreground hover:bg-accent/90 rounded-xl text-sm font-medium" 
+                onClick={() => setAccepted(true)}
+              >
+                参加する
               </Button>
-              <Button variant="outline" className="flex-1 h-12 uppercase tracking-[0.15em] text-[10px] bg-transparent border-border/40 text-foreground/60 hover:bg-background/50 hover:text-foreground" onClick={onClose}>
-                Decide Later
+              <Button 
+                variant="ghost" 
+                className="w-full h-12 text-foreground/50 hover:bg-transparent hover:text-foreground text-sm" 
+                onClick={onClose}
+              >
+                あとで決める
               </Button>
             </div>
           ) : (
-            <div className="flex items-center justify-center gap-3 p-5 bg-foreground text-background rounded-lg">
+            <div className="ios-card flex items-center justify-center gap-2 p-4 bg-green-50 text-green-600">
               <CheckCircle2 className="h-5 w-5" />
-              <span className="text-sm">参加申し込み完了！AIが幹事として調整を進めます</span>
+              <span className="text-sm font-medium">参加申し込み完了！</span>
             </div>
           )}
         </div>

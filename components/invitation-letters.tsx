@@ -1,7 +1,7 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { Sparkles, ArrowUpRight } from "lucide-react"
+import { Sparkles, ChevronRight } from "lucide-react"
 import { useState } from "react"
 import { InvitationDetail } from "@/components/invitation-detail"
 
@@ -31,58 +31,50 @@ export function InvitationLetters() {
 
   return (
     <>
-      <div className="space-y-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-serif font-light italic">届いた招待状</h2>
-          </div>
-          <Sparkles className="h-4 w-4 text-foreground/30" />
-        </div>
+      <div className="space-y-4">
+        {invitations.map((invitation, index) => (
+          <button
+            type="button"
+            key={invitation.id}
+            className="ios-card w-full p-4 text-left active:scale-[0.98] transition-transform duration-150"
+            onClick={() => setSelectedInvitation(invitation.id)}
+          >
+            <div className="flex items-center gap-3">
+              {/* Unread indicator */}
+              <div className="w-2.5 h-2.5 rounded-full flex-shrink-0">
+                {invitation.unread && (
+                  <div className="w-full h-full rounded-full bg-accent" />
+                )}
+              </div>
 
-        <div className="space-y-4">
-          {invitations.map((invitation) => (
-            <div
-              key={invitation.id}
-              className="group p-6 bg-card/50 border border-border/30 rounded-lg cursor-pointer hover:border-border/60 hover:bg-card transition-all duration-300"
-              onClick={() => setSelectedInvitation(invitation.id)}
-            >
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 space-y-4">
-                  <div className="flex items-start gap-3">
-                    {invitation.unread && (
-                      <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 flex-shrink-0" />
-                    )}
-                    <div className="space-y-2">
-                      <h3 className="text-base">{invitation.title}</h3>
-                      <p className="text-[11px] text-foreground/40 flex items-center gap-2">
-                        <Sparkles className="h-3 w-3" />
-                        {invitation.from}
-                      </p>
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-foreground/50 leading-relaxed pl-4">
-                    {invitation.preview}
-                  </p>
-
-                  <div className="flex items-center gap-4 pl-4">
-                    <Badge 
-                      variant="secondary" 
-                      className="rounded-full px-3 py-1 text-[10px] font-normal bg-transparent border border-border/40 text-foreground/60"
-                    >
-                      Match {invitation.matchScore}%
-                    </Badge>
-                    <span className="text-[10px] text-foreground/30">{invitation.date}</span>
-                  </div>
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-sm font-medium truncate">{invitation.title}</h3>
                 </div>
-
-                <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ArrowUpRight className="h-4 w-4 text-foreground/30" />
+                <div className="flex items-center gap-1.5 text-[11px] text-foreground/40 mb-2">
+                  <Sparkles className="h-3 w-3" />
+                  <span>{invitation.from}</span>
+                </div>
+                <p className="text-xs text-foreground/50 line-clamp-2 leading-relaxed">
+                  {invitation.preview}
+                </p>
+                <div className="flex items-center gap-3 mt-3">
+                  <Badge 
+                    variant="secondary" 
+                    className="rounded-full px-2.5 py-0.5 text-[10px] font-normal bg-accent/10 text-accent border-0"
+                  >
+                    Match {invitation.matchScore}%
+                  </Badge>
+                  <span className="text-[10px] text-foreground/30">{invitation.date}</span>
                 </div>
               </div>
+
+              {/* Arrow */}
+              <ChevronRight className="h-4 w-4 text-foreground/20 flex-shrink-0" />
             </div>
-          ))}
-        </div>
+          </button>
+        ))}
       </div>
 
       {/* Invitation Detail Modal */}
