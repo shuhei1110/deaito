@@ -141,7 +141,7 @@ export function IOSLayout({
         {children}
       </main>
 
-      <BottomBar /> // Declare BottomBar component
+      <BottomBar />
     </div>
   )
 }
