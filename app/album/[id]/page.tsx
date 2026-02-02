@@ -4,7 +4,7 @@ import { use } from "react"
 import { IOSLayout } from "@/components/ios-navigation"
 import { AlbumGrid } from "@/components/album-grid"
 import { ConnectionGraph } from "@/components/connection-graph"
-import { TimelineView } from "@/components/timeline-view"
+import { AlbumBranchTree } from "@/components/album-branch-tree"
 import { useState } from "react"
 
 export default function AlbumPage({ params }: { params: Promise<{ id: string }> }) {
@@ -12,7 +12,7 @@ export default function AlbumPage({ params }: { params: Promise<{ id: string }> 
   const albumName = id === "1" ? "桜ヶ丘高校 3年A組" : "東京大学 工学部"
   const albumYear = id === "1" ? "2017" : "2021"
   
-  const [activeTab, setActiveTab] = useState("gallery")
+  const [activeTab, setActiveTab] = useState("tree")
 
   return (
     <IOSLayout 
@@ -30,9 +30,9 @@ export default function AlbumPage({ params }: { params: Promise<{ id: string }> 
       {/* Segment Control */}
       <div className="flex p-1 bg-foreground/5 rounded-xl mb-6">
         {[
+          { id: "tree", label: "ブランチ" },
           { id: "gallery", label: "ギャラリー" },
           { id: "connections", label: "つながり" },
-          { id: "timeline", label: "タイムライン" },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -51,9 +51,9 @@ export default function AlbumPage({ params }: { params: Promise<{ id: string }> 
 
       {/* Content */}
       <div className="space-y-4">
+        {activeTab === "tree" && <AlbumBranchTree albumId={id} />}
         {activeTab === "gallery" && <AlbumGrid />}
         {activeTab === "connections" && <ConnectionGraph />}
-        {activeTab === "timeline" && <TimelineView />}
       </div>
     </IOSLayout>
   )

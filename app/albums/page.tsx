@@ -39,7 +39,7 @@ const myAlbums: Album[] = [
     textColor: "#5c5248",
   },
   {
-    id: "2",
+    id: "1",
     name: "東京大学工学部",
     year: "2021",
     location: "東京都",
@@ -48,7 +48,7 @@ const myAlbums: Album[] = [
     textColor: "#5c5248",
   },
   {
-    id: "3",
+    id: "1",
     name: "桜丘中学校",
     year: "2014",
     location: "東京都",
@@ -57,7 +57,7 @@ const myAlbums: Album[] = [
     textColor: "#5c5248",
   },
   {
-    id: "4",
+    id: "1",
     name: "桜丘小学校",
     year: "2011",
     location: "東京都",
@@ -66,12 +66,57 @@ const myAlbums: Album[] = [
     textColor: "#5c5248",
   },
   {
-    id: "5",
+    id: "1",
     name: "さくら幼稚園",
     year: "2005",
     location: "東京都",
     members: 89,
     color: "#e2d5c6",
+    textColor: "#5c5248",
+  },
+  {
+    id: "1",
+    name: "渋谷区立第一中",
+    year: "2012",
+    location: "東京都",
+    members: 134,
+    color: "#dcd1c3",
+    textColor: "#5c5248",
+  },
+  {
+    id: "1",
+    name: "明治学院大学",
+    year: "2019",
+    location: "東京都",
+    members: 78,
+    color: "#e6dace",
+    textColor: "#5c5248",
+  },
+  {
+    id: "1",
+    name: "港区立白金小",
+    year: "2009",
+    location: "東京都",
+    members: 112,
+    color: "#d8cdc0",
+    textColor: "#5c5248",
+  },
+  {
+    id: "1",
+    name: "慶應義塾高校",
+    year: "2016",
+    location: "神奈川県",
+    members: 245,
+    color: "#e3d6c7",
+    textColor: "#5c5248",
+  },
+  {
+    id: "1",
+    name: "早稲田実業学校",
+    year: "2015",
+    location: "東京都",
+    members: 198,
+    color: "#ded3c5",
     textColor: "#5c5248",
   },
 ]
@@ -115,17 +160,27 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
             style={{ background: `linear-gradient(to left, rgba(0,0,0,0.08), transparent)` }}
           />
 
-          {/* Title - vertical text */}
-          <div 
-            className="absolute inset-0 flex items-center justify-center p-2"
-            style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
-          >
-            <span 
-              className="text-[11px] font-serif tracking-wider line-clamp-2"
-              style={{ color: album.textColor }}
-            >
-              {album.name}
-            </span>
+          {/* Title - vertical text (character by character for mobile compatibility) */}
+          <div className="absolute inset-0 flex items-center justify-center px-1 py-12">
+            <div className="flex flex-col items-center gap-0">
+              {album.name.split("").slice(0, 12).map((char, i) => (
+                <span 
+                  key={i}
+                  className="text-[10px] font-serif leading-[1.3]"
+                  style={{ color: album.textColor }}
+                >
+                  {char}
+                </span>
+              ))}
+              {album.name.length > 12 && (
+                <span 
+                  className="text-[10px] font-serif leading-[1.3]"
+                  style={{ color: album.textColor }}
+                >
+                  ...
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Year label */}
