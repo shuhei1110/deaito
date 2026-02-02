@@ -95,15 +95,7 @@ export function SplashAnimation({ onComplete }: SplashAnimationProps) {
                 <div key={i} className="h-px bg-[#2c2825]/20 rounded" />
               ))}
             </div>
-            {/* Photo placeholder on right page */}
-            <div className={cn(
-              "absolute inset-6 rounded-md bg-[#e8a87c]/10 border border-[#e8a87c]/20 transition-opacity duration-500",
-              phase === "opening" ? "opacity-100" : "opacity-0"
-            )}>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 rounded-full bg-[#e8a87c]/20" />
-              </div>
-            </div>
+
           </div>
 
           {/* Album spine */}
