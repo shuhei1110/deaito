@@ -3,8 +3,20 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ChevronRight, ChevronDown, GitBranch, ImageIcon, Video, Calendar, ArrowRight } from "lucide-react"
+import { ChevronRight, ChevronDown, GitBranch, ImageIcon, Video, Calendar, Plus, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 // Branch node type - Event based
 interface BranchNode {
@@ -245,147 +257,233 @@ interface BranchNodeProps {
   node: BranchNode
   depth: number
   albumId: string
+  isLast?: boolean
+  onAddEvent?: (parentId: string) => void
 }
 
-function BranchNodeItem({ node, depth, albumId }: BranchNodeProps) {
+// イベント追加ダイアログ
+function AddEventDialog({ 
+  parentName, 
+  onAdd, 
+  trigger 
+}: { 
+  parentName: string
+  onAdd: (name: string, date: string) => void
+  trigger: React.ReactNode 
+}) {
+  const [open, setOpen] = useState(false)
+  const [name, setName] = useState("")
+  const [date, setDate] = useState("")
+
+  const handleSubmit = () => {
+    if (name && date) {
+      onAdd(name, date)
+      setName("")
+      setDate("")
+      setOpen(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        {trigger}
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[400px]">
+        <DialogHeader>
+          <DialogTitle>イベントを追加</DialogTitle>
+          <DialogDescription>
+            「{parentName}」に新しいイベント（ブランチ）を作成します
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid gap-2">
+            <Label htmlFor="event-name">イベント名</Label>
+            <Input
+              id="event-name"
+              placeholder="例: クラス写真撮影"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="event-date">日付</Label>
+            <Input
+              id="event-date"
+              placeholder="例: 2024年4月8日"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            キャンセル
+          </Button>
+          <Button onClick={handleSubmit} disabled={!name || !date}>
+            作成
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+function BranchNodeItem({ node, depth, albumId, isLast = false, onAddEvent }: BranchNodeProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const hasChildren = node.children.length > 0
   const isRoot = depth === 0
   
   return (
     <div className="relative">
-      {/* Branch line for non-root */}
-      {!isRoot && (
-        <div className="absolute left-4 top-0 bottom-0 w-px bg-border/60" />
+      {/* 縦の罫線 - 最後のアイテム以外で表示 */}
+      {!isRoot && !isLast && (
+        <div className="absolute left-0 top-0 bottom-0 w-px bg-border/60" style={{ left: "-16px" }} />
+      )}
+      {/* 縦の罫線 - 最後のアイテムは中間まで */}
+      {!isRoot && isLast && (
+        <div className="absolute w-px bg-border/60" style={{ left: "-16px", top: 0, height: "24px" }} />
       )}
       
-      {/* Node content */}
-      <div className={cn("relative", !isRoot && "ml-4 pl-4")}>
-        {/* Horizontal connector */}
-        {!isRoot && (
-          <div className="absolute left-0 top-6 w-4 h-px bg-border/60" />
-        )}
-        
-        {/* Event card */}
-        <div className={cn(
-          "relative rounded-xl border border-border/50 bg-card/50 overflow-hidden",
-          "transition-all duration-200 hover:border-border",
-          isRoot && "border-accent/30 bg-accent/5"
-        )}>
-          {/* Main content - always visible */}
-          <div className="p-3">
-            <div className="flex items-start gap-3">
-              {/* Thumbnail */}
+      {/* 横のコネクター */}
+      {!isRoot && (
+        <div className="absolute top-6 h-px bg-border/60" style={{ left: "-16px", width: "16px" }} />
+      )}
+      
+      {/* イベントカード */}
+      <div className={cn(
+        "relative rounded-xl border border-border/50 bg-card/50 overflow-hidden",
+        "transition-all duration-200 hover:border-accent/50 hover:bg-accent/5",
+        isRoot && "border-accent/30 bg-accent/5"
+      )}>
+        <div className="p-3">
+          <div className="flex items-center gap-3">
+            {/* Thumbnail - リンク付き */}
+            <Link href={`/album/${albumId}/event/${node.id}`} className="flex-shrink-0">
               {node.thumbnail ? (
-                <div className="flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden bg-foreground/5">
+                <div className="w-10 h-10 rounded-lg overflow-hidden bg-foreground/5">
                   <Image
                     src={node.thumbnail || "/placeholder.svg"}
                     alt={node.name}
-                    width={56}
-                    height={56}
+                    width={40}
+                    height={40}
                     className="w-full h-full object-cover"
                   />
                 </div>
               ) : (
-                <div className="flex-shrink-0 w-14 h-14 rounded-lg bg-foreground/5 flex items-center justify-center">
-                  <GitBranch className="w-5 h-5 text-foreground/30" />
+                <div className="w-10 h-10 rounded-lg bg-foreground/5 flex items-center justify-center">
+                  <GitBranch className="w-4 h-4 text-foreground/30" />
                 </div>
               )}
-              
-              {/* Info */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <h3 className={cn(
-                      "font-medium truncate",
-                      isRoot ? "text-base" : "text-sm"
-                    )}>
-                      {node.name}
-                    </h3>
-                    <div className="flex items-center gap-1.5 mt-0.5 text-xs text-foreground/50">
-                      <Calendar className="w-3 h-3 flex-shrink-0" />
-                      <span className="truncate">{node.date}</span>
-                    </div>
-                  </div>
-                  
-                  {isRoot && (
-                    <span className="flex-shrink-0 px-2 py-0.5 text-[10px] bg-accent/20 text-accent-foreground rounded-full">
-                      main
-                    </span>
-                  )}
-                </div>
-                
-                {/* Stats */}
-                <div className="flex items-center gap-3 mt-2 text-xs text-foreground/50">
-                  <span className="flex items-center gap-1">
-                    <ImageIcon className="w-3 h-3" />
-                    {node.imageCount}
-                  </span>
-                  {node.videoCount > 0 && (
-                    <span className="flex items-center gap-1">
-                      <Video className="w-3 h-3" />
-                      {node.videoCount}
-                    </span>
-                  )}
-                  {hasChildren && (
-                    <span className="flex items-center gap-1 text-accent">
-                      <GitBranch className="w-3 h-3" />
-                      {node.children.length}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
+            </Link>
             
-            {/* Action buttons */}
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/50">
-              {/* Navigate to event */}
-              <Link
-                href={`/album/${albumId}/event/${node.id}`}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-medium rounded-lg bg-foreground/5 hover:bg-foreground/10 transition-colors"
-              >
-                <span>イベントを見る</span>
-                <ArrowRight className="w-3 h-3" />
-              </Link>
+            {/* Info - リンク付き */}
+            <Link href={`/album/${albumId}/event/${node.id}`} className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <h3 className={cn(
+                  "font-medium truncate",
+                  isRoot ? "text-sm" : "text-sm"
+                )}>
+                  {node.name}
+                </h3>
+                {isRoot && (
+                  <span className="flex-shrink-0 px-1.5 py-0.5 text-[9px] bg-accent/20 text-accent-foreground rounded-full">
+                    main
+                  </span>
+                )}
+              </div>
               
-              {/* Expand children */}
-              {hasChildren && (
-                <button
-                  type="button"
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-medium rounded-lg bg-foreground/5 hover:bg-foreground/10 transition-colors"
-                >
-                  {isExpanded ? (
-                    <>
-                      <ChevronDown className="w-3.5 h-3.5" />
-                      <span>閉じる</span>
-                    </>
-                  ) : (
-                    <>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                      <span>子イベント ({node.children.length})</span>
-                    </>
-                  )}
-                </button>
-              )}
-            </div>
+              {/* Stats inline */}
+              <div className="flex items-center gap-2 mt-0.5 text-[11px] text-foreground/50">
+                <span className="flex items-center gap-0.5">
+                  <Calendar className="w-3 h-3" />
+                  {node.date}
+                </span>
+                <span className="text-foreground/30">·</span>
+                <span className="flex items-center gap-0.5">
+                  <ImageIcon className="w-3 h-3" />
+                  {node.imageCount}
+                </span>
+                {node.videoCount > 0 && (
+                  <span className="flex items-center gap-0.5">
+                    <Video className="w-3 h-3" />
+                    {node.videoCount}
+                  </span>
+                )}
+              </div>
+            </Link>
+            
+            {/* 展開ボタン */}
+            {hasChildren && (
+              <button
+                type="button"
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="flex-shrink-0 p-1.5 rounded-lg hover:bg-foreground/10 transition-colors"
+              >
+                {isExpanded ? (
+                  <ChevronDown className="w-4 h-4 text-foreground/50" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-foreground/50" />
+                )}
+              </button>
+            )}
+            
+            {/* 子がない場合はプラスボタン */}
+            {!hasChildren && onAddEvent && (
+              <AddEventDialog
+                parentName={node.name}
+                onAdd={(name, date) => console.log("Add event:", name, date, "to", node.id)}
+                trigger={
+                  <button
+                    type="button"
+                    className="flex-shrink-0 p-1.5 rounded-lg hover:bg-foreground/10 transition-colors"
+                  >
+                    <Plus className="w-4 h-4 text-foreground/40" />
+                  </button>
+                }
+              />
+            )}
           </div>
         </div>
-        
-        {/* Children - expanded */}
-        {hasChildren && isExpanded && (
-          <div className="mt-2 space-y-2">
-            {node.children.map((child) => (
-              <BranchNodeItem
-                key={child.id}
-                node={child}
-                depth={depth + 1}
-                albumId={albumId}
-              />
-            ))}
-          </div>
-        )}
       </div>
+      
+      {/* 子イベント */}
+      {hasChildren && isExpanded && (
+        <div className="relative mt-2 ml-6 space-y-2">
+          {/* 縦の罫線 */}
+          <div className="absolute left-0 top-0 bottom-0 w-px bg-border/60" style={{ left: "-16px" }} />
+          
+          {node.children.map((child, index) => (
+            <BranchNodeItem
+              key={child.id}
+              node={child}
+              depth={depth + 1}
+              albumId={albumId}
+              isLast={index === node.children.length - 1}
+              onAddEvent={onAddEvent}
+            />
+          ))}
+          
+          {/* 子イベント追加ボタン */}
+          {onAddEvent && (
+            <AddEventDialog
+              parentName={node.name}
+              onAdd={(name, date) => console.log("Add event:", name, date, "to", node.id)}
+              trigger={
+                <button
+                  type="button"
+                  className="relative flex items-center gap-2 ml-0 py-1.5 px-3 text-xs text-foreground/40 hover:text-foreground/60 transition-colors"
+                >
+                  {/* コネクター */}
+                  <div className="absolute h-px bg-border/60" style={{ left: "-16px", top: "50%", width: "16px" }} />
+                  <Plus className="w-3 h-3" />
+                  <span>イベントを追加</span>
+                </button>
+              }
+            />
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -395,36 +493,60 @@ interface AlbumBranchTreeProps {
 }
 
 export function AlbumBranchTree({ albumId = "1" }: AlbumBranchTreeProps) {
+  const handleAddEvent = (parentId: string) => {
+    console.log("Add event to:", parentId)
+  }
+
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-2 text-xs text-foreground/50">
-        <GitBranch className="w-4 h-4" />
-        <span>イベントツリー</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-xs text-foreground/50">
+          <GitBranch className="w-4 h-4" />
+          <span>イベントツリー</span>
+        </div>
+        
+        {/* ルートにイベント追加ボタン */}
+        <AddEventDialog
+          parentName={sampleBranchData.name}
+          onAdd={(name, date) => console.log("Add root event:", name, date)}
+          trigger={
+            <button
+              type="button"
+              className="flex items-center gap-1.5 py-1.5 px-3 text-xs text-foreground/60 hover:text-foreground bg-foreground/5 hover:bg-foreground/10 rounded-lg transition-colors"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>イベント追加</span>
+            </button>
+          }
+        />
       </div>
       
       {/* Tree visualization */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         {/* Root node */}
         <BranchNodeItem
           node={sampleBranchData}
           depth={0}
           albumId={albumId}
+          onAddEvent={handleAddEvent}
         />
         
         {/* Event branches */}
-        <div className="relative pl-4">
-          <div className="absolute left-4 top-0 bottom-0 w-px bg-border/60" />
-          <div className="space-y-3 pl-4">
-            {sampleBranchData.children.map((child) => (
-              <BranchNodeItem
-                key={child.id}
-                node={child}
-                depth={1}
-                albumId={albumId}
-              />
-            ))}
-          </div>
+        <div className="relative ml-6 space-y-2">
+          {/* 縦の罫線 */}
+          <div className="absolute left-0 top-0 bottom-0 w-px bg-border/60" style={{ left: "-16px" }} />
+          
+          {sampleBranchData.children.map((child, index) => (
+            <BranchNodeItem
+              key={child.id}
+              node={child}
+              depth={1}
+              albumId={albumId}
+              isLast={index === sampleBranchData.children.length - 1}
+              onAddEvent={handleAddEvent}
+            />
+          ))}
         </div>
       </div>
     </div>

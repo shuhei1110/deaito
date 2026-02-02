@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { IOSLayout } from "@/components/ios-navigation"
 import { AlbumBookshelf } from "@/components/album-bookshelf"
+import { TsunaguPointsCarousel } from "@/components/tsunagu-points-carousel"
 import { SplashAnimation } from "@/components/splash-animation"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Users, Calendar, MessageCircle } from "lucide-react"
@@ -91,6 +92,11 @@ export default function Home() {
           {/* Album Bookshelf */}
           <div className="mb-8">
             <AlbumBookshelf />
+          </div>
+
+          {/* Tsunagu Points Carousel */}
+          <div className="mb-8 -mx-4">
+            <TsunaguPointsCarousel />
           </div>
 
           {/* Recent Activity */}

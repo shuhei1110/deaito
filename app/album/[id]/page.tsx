@@ -7,10 +7,25 @@ import { ConnectionGraph } from "@/components/connection-graph"
 import { AlbumBranchTree } from "@/components/album-branch-tree"
 import { useState } from "react"
 
+// アルバムデータのマッピング（albums/page.tsx と同じデータ）
+const albumsData: Record<string, { name: string; year: string }> = {
+  "1": { name: "桜ヶ丘高校 3年A組", year: "2017" },
+  "2": { name: "東京大学工学部", year: "2021" },
+  "3": { name: "桜丘中学校", year: "2014" },
+  "4": { name: "桜丘小学校", year: "2011" },
+  "5": { name: "さくら幼稚園", year: "2005" },
+  "6": { name: "渋谷区立第一中", year: "2012" },
+  "7": { name: "明治学院大学", year: "2019" },
+  "8": { name: "港区立白金小", year: "2009" },
+  "9": { name: "慶應義塾高校", year: "2016" },
+  "10": { name: "早稲田実業学校", year: "2015" },
+}
+
 export default function AlbumPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
-  const albumName = id === "1" ? "桜ヶ丘高校 3年A組" : "東京大学 工学部"
-  const albumYear = id === "1" ? "2017" : "2021"
+  const album = albumsData[id] || { name: "アルバム", year: "----" }
+  const albumName = album.name
+  const albumYear = album.year
   
   const [activeTab, setActiveTab] = useState("tree")
 

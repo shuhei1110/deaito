@@ -1,0 +1,24 @@
+services:
+  frontend:
+    build:
+      context: .
+    container_name: deaito-frontend
+    tty: true
+    stdin_open: true
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    working_dir: /app
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+    # command: ["bash", "setup-dev.sh"]
+    command: ["bash"]
+
+networks:
+  default:
+    driver: bridge

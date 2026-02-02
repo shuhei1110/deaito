@@ -39,7 +39,7 @@ const myAlbums: Album[] = [
     textColor: "#5c5248",
   },
   {
-    id: "1",
+    id: "2",
     name: "東京大学工学部",
     year: "2021",
     location: "東京都",
@@ -48,7 +48,7 @@ const myAlbums: Album[] = [
     textColor: "#5c5248",
   },
   {
-    id: "1",
+    id: "3",
     name: "桜丘中学校",
     year: "2014",
     location: "東京都",
@@ -57,7 +57,7 @@ const myAlbums: Album[] = [
     textColor: "#5c5248",
   },
   {
-    id: "1",
+    id: "4",
     name: "桜丘小学校",
     year: "2011",
     location: "東京都",
@@ -66,7 +66,7 @@ const myAlbums: Album[] = [
     textColor: "#5c5248",
   },
   {
-    id: "1",
+    id: "5",
     name: "さくら幼稚園",
     year: "2005",
     location: "東京都",
@@ -75,7 +75,7 @@ const myAlbums: Album[] = [
     textColor: "#5c5248",
   },
   {
-    id: "1",
+    id: "6",
     name: "渋谷区立第一中",
     year: "2012",
     location: "東京都",
@@ -84,7 +84,7 @@ const myAlbums: Album[] = [
     textColor: "#5c5248",
   },
   {
-    id: "1",
+    id: "7",
     name: "明治学院大学",
     year: "2019",
     location: "東京都",
@@ -93,7 +93,7 @@ const myAlbums: Album[] = [
     textColor: "#5c5248",
   },
   {
-    id: "1",
+    id: "8",
     name: "港区立白金小",
     year: "2009",
     location: "東京都",
@@ -102,7 +102,7 @@ const myAlbums: Album[] = [
     textColor: "#5c5248",
   },
   {
-    id: "1",
+    id: "9",
     name: "慶應義塾高校",
     year: "2016",
     location: "神奈川県",
@@ -111,7 +111,7 @@ const myAlbums: Album[] = [
     textColor: "#5c5248",
   },
   {
-    id: "1",
+    id: "10",
     name: "早稲田実業学校",
     year: "2015",
     location: "東京都",
