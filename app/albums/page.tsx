@@ -115,17 +115,27 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
             style={{ background: `linear-gradient(to left, rgba(0,0,0,0.08), transparent)` }}
           />
 
-          {/* Title - vertical text */}
-          <div 
-            className="absolute inset-0 flex items-center justify-center p-2"
-            style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
-          >
-            <span 
-              className="text-[11px] font-serif tracking-wider line-clamp-2"
-              style={{ color: album.textColor }}
-            >
-              {album.name}
-            </span>
+          {/* Title - vertical text (character by character for mobile compatibility) */}
+          <div className="absolute inset-0 flex items-center justify-center px-1 py-12">
+            <div className="flex flex-col items-center gap-0">
+              {album.name.split("").slice(0, 12).map((char, i) => (
+                <span 
+                  key={i}
+                  className="text-[10px] font-serif leading-[1.3]"
+                  style={{ color: album.textColor }}
+                >
+                  {char}
+                </span>
+              ))}
+              {album.name.length > 12 && (
+                <span 
+                  className="text-[10px] font-serif leading-[1.3]"
+                  style={{ color: album.textColor }}
+                >
+                  ...
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Year label */}
