@@ -23,7 +23,7 @@ export default function AlbumPage({ params }: { params: Promise<{ id: string }> 
       ]}
     >
       <div className="py-4">
-        <h2 className="text-xl font-serif font-light mb-1 italic">{albumName}</h2>
+        <h2 className="text-xl font-serif font-light mb-1">{albumName}</h2>
         <p className="text-foreground/50 text-xs">{albumYear}年卒業</p>
       </div>
 

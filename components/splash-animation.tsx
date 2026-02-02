@@ -135,7 +135,7 @@ export function SplashAnimation({ onComplete }: SplashAnimationProps) {
               {/* Album title */}
               <div className="relative z-10 text-center">
                 <p className="text-[#8a8279] text-xs uppercase tracking-[0.3em] mb-2">memories</p>
-                <h1 className="text-2xl font-serif font-light italic text-[#2c2825]">deaito</h1>
+                <h1 className="text-2xl font-serif font-light text-[#2c2825]">deaito</h1>
                 <div className="mt-4 w-12 h-px bg-[#c9a992] mx-auto" />
               </div>
 

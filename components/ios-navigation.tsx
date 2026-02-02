@@ -22,7 +22,7 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
       <div className="flex items-center justify-between px-4 h-14 max-w-2xl mx-auto">
         {/* Left: Logo */}
         <Link href="/" className="flex items-center">
-          <h1 className="text-xl font-serif font-light tracking-wide italic">deaito</h1>
+          <h1 className="text-xl font-serif font-light tracking-wide">deaito</h1>
         </Link>
 
         {/* Center: Title (optional) */}
