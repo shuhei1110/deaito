@@ -1,11 +1,8 @@
 "use client"
 
-import type React from "react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Eye, Heart, MessageCircle, Video, ImageIcon, Plus } from "lucide-react"
-import { useState } from "react"
+import { Video, ImageIcon, Heart, Eye, GitBranch } from "lucide-react"
 
 const mockMedia = [
   {
@@ -13,194 +10,143 @@ const mockMedia = [
     type: "image",
     url: "/graduation-ceremony-group-photo.jpg",
     title: "卒業式の集合写真",
-    school: "東京大学",
-    date: "2024年3月",
-    uploadedBy: { name: "山田 花子", avatar: "/japanese-woman.png" },
+    eventId: "graduation",
+    eventName: "卒業式",
+    date: "2017年3月",
     views: 45,
     likes: 12,
-    comments: 5,
-    liked: false,
-    viewers: [
-      { name: "佐藤 健", time: "2時間前" },
-      { name: "鈴木 美咲", time: "5時間前" },
-      { name: "高橋 誠", time: "1日前" },
-    ],
   },
   {
     id: 2,
     type: "video",
     url: "/sports-day-video-thumbnail.jpg",
     title: "体育祭のリレー",
-    school: "桜ヶ丘高校",
-    date: "2023年10月",
-    uploadedBy: { name: "伊藤 大輔", avatar: "/japanese-young-man.jpg" },
+    eventId: "sports-2014-relay",
+    eventName: "クラス対抗リレー",
+    date: "2014年9月",
     views: 78,
     likes: 23,
-    comments: 8,
-    liked: true,
-    viewers: [
-      { name: "小林 愛", time: "30分前" },
-      { name: "渡辺 翔", time: "3時間前" },
-      { name: "中村 優子", time: "6時間前" },
-    ],
   },
   {
     id: 3,
     type: "image",
     url: "/school-trip-mountain.jpg",
     title: "修学旅行 in 京都",
-    school: "桜ヶ丘高校",
-    date: "2023年6月",
-    uploadedBy: { name: "田中 太郎", avatar: "/friendly-japanese-man.jpg" },
+    eventId: "trip-2015-day1",
+    eventName: "1日目 - 京都",
+    date: "2015年6月",
     views: 92,
     likes: 31,
-    comments: 12,
-    liked: false,
-    viewers: [
-      { name: "木村 梨花", time: "1時間前" },
-      { name: "斎藤 拓也", time: "4時間前" },
-      { name: "松本 結衣", time: "8時間前" },
-      { name: "前田 航", time: "12時間前" },
-    ],
   },
   {
     id: 4,
     type: "image",
     url: "/school-festival-stage-performance.jpg",
     title: "文化祭のバンド演奏",
-    school: "桜ヶ丘高校",
-    date: "2023年9月",
-    uploadedBy: { name: "吉田 優", avatar: "/japanese-teenager.jpg" },
+    eventId: "culture-2014-stage",
+    eventName: "ステージ発表",
+    date: "2014年11月",
     views: 156,
     likes: 45,
-    comments: 18,
-    liked: true,
-    viewers: [
-      { name: "清水 真理", time: "15分前" },
-      { name: "池田 剛", time: "2時間前" },
-      { name: "橋本 沙織", time: "5時間前" },
-    ],
+  },
+  {
+    id: 5,
+    type: "image",
+    url: "/graduation-ceremony-group-photo.jpg",
+    title: "入学式の記念撮影",
+    eventId: "entrance-class",
+    eventName: "クラス写真撮影",
+    date: "2014年4月",
+    views: 67,
+    likes: 28,
+  },
+  {
+    id: 6,
+    type: "video",
+    url: "/school-festival-stage-performance.jpg",
+    title: "応援合戦の様子",
+    eventId: "sports-2014-cheer",
+    eventName: "応援合戦",
+    date: "2014年9月",
+    views: 89,
+    likes: 34,
   },
 ]
 
-export function AlbumGrid() {
-  const [mediaItems, setMediaItems] = useState(mockMedia)
+interface AlbumGridProps {
+  albumId?: string
+}
 
-  const handleLike = (id: number, e: React.MouseEvent) => {
-    e.stopPropagation()
-    setMediaItems((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              liked: !item.liked,
-              likes: item.liked ? item.likes - 1 : item.likes + 1,
-            }
-          : item,
-      ),
-    )
-  }
+export function AlbumGrid({ albumId = "1" }: AlbumGridProps) {
+  // Shuffle media for random display
+  const shuffledMedia = [...mockMedia].sort(() => Math.random() - 0.5)
 
   return (
-    <div className="space-y-8">
-      {/* Upload Section */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-1 p-8 border-2 border-dashed border-border rounded-lg hover:border-foreground/30 transition-colors cursor-pointer group flex flex-col items-center justify-center text-center gap-3">
-          <div className="p-3 rounded-full bg-secondary group-hover:bg-foreground group-hover:text-background transition-colors">
-            <ImageIcon className="h-6 w-6" />
-          </div>
-          <div>
-            <p className="font-medium text-sm">Upload Photo</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Share your memories</p>
-          </div>
-        </div>
-
-        <div className="flex-1 p-8 border-2 border-dashed border-border rounded-lg hover:border-foreground/30 transition-colors cursor-pointer group flex flex-col items-center justify-center text-center gap-3">
-          <div className="p-3 rounded-full bg-secondary group-hover:bg-foreground group-hover:text-background transition-colors">
-            <Video className="h-6 w-6" />
-          </div>
-          <div>
-            <p className="font-medium text-sm">Upload Video</p>
-            <p className="text-xs text-muted-foreground mt-0.5">Share video moments</p>
-          </div>
-        </div>
-      </div>
-
+    <div className="space-y-6">
       {/* Header */}
       <div>
-        <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">Shared memories</p>
-        <h2 className="text-2xl font-serif">みんなの思い出</h2>
+        <div className="flex items-center gap-2 text-xs text-foreground/50 mb-2">
+          <ImageIcon className="w-4 h-4" />
+          <span>ギャラリー</span>
+        </div>
+        <p className="text-sm text-foreground/60">
+          タップしてイベントに移動
+        </p>
       </div>
 
-      {/* Media Grid */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {mediaItems.map((media) => (
-          <div key={media.id} className="group cursor-pointer">
+      {/* Masonry-style Grid */}
+      <div className="grid grid-cols-2 gap-3">
+        {shuffledMedia.map((media, index) => (
+          <Link
+            key={media.id}
+            href={`/album/${albumId}/event/${media.eventId}`}
+            className={`group relative overflow-hidden rounded-xl bg-foreground/5 ${
+              index % 3 === 0 ? "row-span-2 aspect-[3/4]" : "aspect-square"
+            }`}
+          >
             {/* Image */}
-            <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-muted mb-4">
-              <img
-                src={media.url || "/placeholder.svg"}
-                alt={media.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              {media.type === "video" && (
-                <Badge className="absolute top-3 right-3 bg-foreground/80 text-background backdrop-blur-sm rounded-full text-xs">
-                  <Video className="h-3 w-3 mr-1" />
-                  Video
-                </Badge>
-              )}
-            </div>
-
-            {/* Content */}
-            <div className="space-y-3">
-              <div className="flex items-start justify-between gap-4">
-                <h3 className="font-medium">{media.title}</h3>
-                <span className="text-xs text-muted-foreground whitespace-nowrap">{media.date}</span>
+            <img
+              src={media.url || "/placeholder.svg"}
+              alt={media.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            
+            {/* Overlay gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            
+            {/* Video badge */}
+            {media.type === "video" && (
+              <Badge className="absolute top-2 right-2 bg-foreground/80 text-background backdrop-blur-sm rounded-full text-[10px] px-1.5 py-0.5">
+                <Video className="h-3 w-3" />
+              </Badge>
+            )}
+            
+            {/* Info overlay on hover */}
+            <div className="absolute inset-x-0 bottom-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+              <div className="flex items-center gap-1 text-white/90 text-[10px] mb-1">
+                <GitBranch className="w-3 h-3" />
+                <span className="truncate">{media.eventName}</span>
               </div>
-
-              <div className="flex items-center gap-2">
-                <Avatar className="h-5 w-5 border border-border">
-                  <AvatarImage src={media.uploadedBy.avatar || "/placeholder.svg"} />
-                  <AvatarFallback className="text-[10px]">{media.uploadedBy.name[0]}</AvatarFallback>
-                </Avatar>
-                <span className="text-xs text-muted-foreground">{media.uploadedBy.name}</span>
-              </div>
-
-              <div className="flex items-center gap-4 pt-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 px-2 gap-1.5 text-xs"
-                  onClick={(e) => handleLike(media.id, e)}
-                >
-                  <Heart className={`h-3.5 w-3.5 ${media.liked ? "fill-accent text-accent" : ""}`} />
-                  {media.likes}
-                </Button>
-                <Button variant="ghost" size="sm" className="h-7 px-2 gap-1.5 text-xs">
-                  <MessageCircle className="h-3.5 w-3.5" />
-                  {media.comments}
-                </Button>
-                <span className="flex items-center gap-1.5 text-xs text-muted-foreground ml-auto">
-                  <Eye className="h-3.5 w-3.5" />
+              <p className="text-white text-xs font-medium truncate">{media.title}</p>
+              <div className="flex items-center gap-3 mt-1.5 text-white/70 text-[10px]">
+                <span className="flex items-center gap-1">
+                  <Eye className="w-3 h-3" />
                   {media.views}
                 </span>
+                <span className="flex items-center gap-1">
+                  <Heart className="w-3 h-3" />
+                  {media.likes}
+                </span>
               </div>
-
-              {media.viewers.length > 0 && (
-                <div className="pt-3 border-t border-border">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Recent viewers</p>
-                  <div className="space-y-1.5">
-                    {media.viewers.slice(0, 3).map((viewer, idx) => (
-                      <div key={idx} className="flex items-center justify-between text-xs">
-                        <span>{viewer.name}</span>
-                        <span className="text-muted-foreground">{viewer.time}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
-          </div>
+            
+            {/* Subtle event indicator */}
+            <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="px-2 py-1 text-[10px] bg-white/20 backdrop-blur-sm text-white rounded-full">
+                {media.date}
+              </span>
+            </div>
+          </Link>
         ))}
       </div>
     </div>
