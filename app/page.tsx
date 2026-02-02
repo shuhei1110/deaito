@@ -69,7 +69,7 @@ export default function Home() {
         <IOSLayout breadcrumbs={[{ label: "ホーム" }]}>
           {/* Hero Section */}
           <div className="py-6 text-center">
-            <h2 className="text-2xl font-serif font-light leading-tight mb-2 text-balance italic">
+            <h2 className="text-2xl font-serif font-light leading-tight mb-2 text-balance">
               終わりのない「つながり」を
             </h2>
             <p className="text-foreground/50 leading-relaxed text-xs max-w-xs mx-auto">

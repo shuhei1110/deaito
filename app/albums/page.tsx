@@ -26,7 +26,6 @@ interface Album {
   members: number
   color: string
   textColor: string
-  thickness: "thin" | "normal" | "thick"
 }
 
 const myAlbums: Album[] = [
@@ -36,9 +35,8 @@ const myAlbums: Album[] = [
     year: "2017",
     location: "東京都",
     members: 42,
-    color: "#d4a574",
-    textColor: "#3d2914",
-    thickness: "normal",
+    color: "#e8ddd0",
+    textColor: "#5c5248",
   },
   {
     id: "2",
@@ -46,9 +44,8 @@ const myAlbums: Album[] = [
     year: "2021",
     location: "東京都",
     members: 67,
-    color: "#8b7355",
-    textColor: "#f5f0ea",
-    thickness: "thick",
+    color: "#d9cfc2",
+    textColor: "#5c5248",
   },
   {
     id: "3",
@@ -56,9 +53,8 @@ const myAlbums: Album[] = [
     year: "2014",
     location: "東京都",
     members: 156,
-    color: "#c9a992",
-    textColor: "#3d2914",
-    thickness: "normal",
+    color: "#e5d8c8",
+    textColor: "#5c5248",
   },
   {
     id: "4",
@@ -66,9 +62,8 @@ const myAlbums: Album[] = [
     year: "2011",
     location: "東京都",
     members: 203,
-    color: "#a08070",
-    textColor: "#f5f0ea",
-    thickness: "thin",
+    color: "#ddd2c4",
+    textColor: "#5c5248",
   },
   {
     id: "5",
@@ -76,9 +71,8 @@ const myAlbums: Album[] = [
     year: "2005",
     location: "東京都",
     members: 89,
-    color: "#b8967a",
-    textColor: "#3d2914",
-    thickness: "thin",
+    color: "#e2d5c6",
+    textColor: "#5c5248",
   },
 ]
 
@@ -89,8 +83,6 @@ const searchableAlbums = [
 ]
 
 function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }) {
-  const widthMap = { thin: "w-12", normal: "w-16", thick: "w-20" }
-  
   return (
     <Link href={`/album/${album.id}`}>
       <div
@@ -101,35 +93,35 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
         )}
       >
         <div
-          className={cn("relative h-64 rounded-sm shadow-lg", widthMap[album.thickness])}
+          className="relative w-14 h-64 rounded-sm"
           style={{
-            background: `linear-gradient(135deg, ${album.color} 0%, ${album.color}dd 50%, ${album.color}aa 100%)`,
+            background: `linear-gradient(135deg, ${album.color} 0%, ${album.color}ee 50%, ${album.color}dd 100%)`,
             boxShadow: `
-              3px 0 6px rgba(0,0,0,0.25),
-              inset -2px 0 4px rgba(255,255,255,0.1),
-              inset 2px 0 4px rgba(0,0,0,0.1)
+              1px 0 3px rgba(0,0,0,0.1),
+              inset -1px 0 2px rgba(255,255,255,0.3),
+              inset 1px 0 2px rgba(0,0,0,0.05)
             `,
           }}
         >
           {/* Spine edge highlight */}
           <div 
-            className="absolute left-0 top-0 bottom-0 w-1 rounded-l-sm"
-            style={{ background: `linear-gradient(to right, rgba(0,0,0,0.2), transparent)` }}
+            className="absolute left-0 top-0 bottom-0 w-0.5 rounded-l-sm"
+            style={{ background: `linear-gradient(to right, rgba(0,0,0,0.1), transparent)` }}
           />
           
           {/* Spine edge right */}
           <div 
-            className="absolute right-0 top-0 bottom-0 w-1 rounded-r-sm"
-            style={{ background: `linear-gradient(to left, rgba(0,0,0,0.15), transparent)` }}
+            className="absolute right-0 top-0 bottom-0 w-0.5 rounded-r-sm"
+            style={{ background: `linear-gradient(to left, rgba(0,0,0,0.08), transparent)` }}
           />
 
           {/* Title - vertical text */}
           <div 
-            className="absolute inset-0 flex items-center justify-center p-3"
+            className="absolute inset-0 flex items-center justify-center p-2"
             style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
           >
             <span 
-              className="text-xs font-medium tracking-wider line-clamp-2"
+              className="text-[11px] font-serif tracking-wider line-clamp-2"
               style={{ color: album.textColor }}
             >
               {album.name}
@@ -142,7 +134,7 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
             style={{ writingMode: "horizontal-tb" }}
           >
             <span 
-              className="text-[10px] font-light opacity-80"
+              className="text-[9px] opacity-60"
               style={{ color: album.textColor }}
             >
               {album.year}
@@ -155,7 +147,7 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
             style={{ writingMode: "horizontal-tb" }}
           >
             <span 
-              className="text-[9px] opacity-60"
+              className="text-[8px] opacity-50"
               style={{ color: album.textColor }}
             >
               {album.members}人
@@ -164,11 +156,11 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
 
           {/* Decorative lines */}
           <div 
-            className="absolute top-10 left-2 right-2 h-px opacity-20"
+            className="absolute top-10 left-2 right-2 h-px opacity-15"
             style={{ backgroundColor: album.textColor }}
           />
           <div 
-            className="absolute bottom-10 left-2 right-2 h-px opacity-20"
+            className="absolute bottom-10 left-2 right-2 h-px opacity-15"
             style={{ backgroundColor: album.textColor }}
           />
         </div>
@@ -195,7 +187,7 @@ export default function AlbumsPage() {
         <>
           {/* Header */}
           <div className="py-4 text-center">
-            <h2 className="text-xl font-serif font-light mb-1 italic">本棚</h2>
+            <h2 className="text-xl font-serif font-light mb-1">本棚</h2>
             <p className="text-foreground/50 text-xs">アルバムを選んで思い出を振り返る</p>
           </div>
 
@@ -203,16 +195,16 @@ export default function AlbumsPage() {
           <div className="relative mb-8">
             {/* Shelf background - wood texture */}
             <div 
-              className="absolute bottom-0 left-0 right-0 h-4 rounded-sm"
+              className="absolute bottom-0 left-0 right-0 h-3 rounded-sm"
               style={{
-                background: "linear-gradient(180deg, #9b8365 0%, #7b6354 50%, #6b5344 100%)",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)",
+                background: "linear-gradient(180deg, #c9bba8 0%, #b8a896 50%, #a89886 100%)",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.15)",
               }}
             />
             
             {/* Books container */}
             <div 
-              className="flex gap-2 pb-5 overflow-x-auto scrollbar-hide px-2 pt-4"
+              className="flex gap-1.5 pb-4 overflow-x-auto scrollbar-hide px-2 pt-4"
               style={{ 
                 scrollSnapType: "x mandatory",
                 WebkitOverflowScrolling: "touch",
@@ -235,9 +227,9 @@ export default function AlbumsPage() {
 
             {/* Shelf front edge */}
             <div 
-              className="absolute bottom-0 left-0 right-0 h-2 rounded-b-sm"
+              className="absolute bottom-0 left-0 right-0 h-1.5 rounded-b-sm"
               style={{
-                background: "linear-gradient(180deg, #ab9375 0%, #8b7355 100%)",
+                background: "linear-gradient(180deg, #d4c6b4 0%, #c4b6a4 100%)",
               }}
             />
           </div>

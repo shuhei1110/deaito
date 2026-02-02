@@ -28,7 +28,7 @@ export function UserProfile() {
           <div className="flex items-start justify-between mb-8">
             <Avatar className="h-24 w-24 border border-border/50">
               <AvatarImage src={mockUser.avatar || "/placeholder.svg"} alt={mockUser.name} />
-              <AvatarFallback className="text-xl font-serif italic">TT</AvatarFallback>
+              <AvatarFallback className="text-xl font-serif">TT</AvatarFallback>
             </Avatar>
             <Button variant="ghost" size="sm" className="text-[10px] uppercase tracking-[0.15em] text-foreground/50 hover:text-foreground hover:bg-transparent">
               Edit
