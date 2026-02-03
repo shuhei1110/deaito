@@ -12,48 +12,139 @@ interface Album {
   members: number
   color: string
   textColor: string
+  category?: "school" | "club" | "circle" | "friends" | "seminar" | "company"
 }
 
+// 西暦順（古い順）でソート済み - albums/page.tsx と統一
 const albums: Album[] = [
   {
     id: "1",
-    name: "桜ヶ丘高校",
-    year: "2017",
+    name: "さくら幼稚園",
+    year: "2005",
     location: "東京都",
-    members: 42,
-    color: "#e8ddd0",
+    members: 28,
+    color: "#f5e6d8",
     textColor: "#5c5248",
+    category: "school",
   },
   {
     id: "2",
-    name: "東京大学工学部",
-    year: "2021",
+    name: "桜丘小学校",
+    year: "2011",
     location: "東京都",
-    members: 67,
-    color: "#d9cfc2",
+    members: 32,
+    color: "#e8ddd0",
     textColor: "#5c5248",
+    category: "school",
   },
   {
     id: "3",
     name: "桜丘中学校",
     year: "2014",
     location: "東京都",
-    members: 156,
+    members: 35,
     color: "#e5d8c8",
     textColor: "#5c5248",
+    category: "school",
   },
   {
     id: "4",
-    name: "桜丘小学校",
-    year: "2011",
+    name: "吹奏楽部",
+    year: "2014",
     location: "東京都",
-    members: 203,
+    members: 18,
     color: "#ddd2c4",
     textColor: "#5c5248",
+    category: "club",
+  },
+  {
+    id: "5",
+    name: "桜ヶ丘高校 3年A組",
+    year: "2017",
+    location: "東京都",
+    members: 38,
+    color: "#d9cfc2",
+    textColor: "#5c5248",
+    category: "school",
+  },
+  {
+    id: "6",
+    name: "バスケ部",
+    year: "2017",
+    location: "東京都",
+    members: 12,
+    color: "#e2d5c6",
+    textColor: "#5c5248",
+    category: "club",
+  },
+  {
+    id: "7",
+    name: "高校の仲良し6人組",
+    year: "2017",
+    location: "東京都",
+    members: 6,
+    color: "#f0e5d8",
+    textColor: "#5c5248",
+    category: "friends",
+  },
+  {
+    id: "8",
+    name: "写真サークル",
+    year: "2019",
+    location: "東京都",
+    members: 15,
+    color: "#dcd1c3",
+    textColor: "#5c5248",
+    category: "circle",
+  },
+  {
+    id: "9",
+    name: "田中研究室",
+    year: "2021",
+    location: "東京都",
+    members: 8,
+    color: "#e6dace",
+    textColor: "#5c5248",
+    category: "seminar",
+  },
+  {
+    id: "10",
+    name: "東京大学工学部",
+    year: "2021",
+    location: "東京都",
+    members: 67,
+    color: "#d8cdc0",
+    textColor: "#5c5248",
+    category: "school",
+  },
+  {
+    id: "11",
+    name: "ABC株式会社 2022新卒",
+    year: "2022",
+    location: "東京都",
+    members: 45,
+    color: "#e3d6c7",
+    textColor: "#5c5248",
+    category: "company",
+  },
+  {
+    id: "12",
+    name: "大学の飲み仲間",
+    year: "2021",
+    location: "東京都",
+    members: 9,
+    color: "#ede2d5",
+    textColor: "#5c5248",
+    category: "friends",
   },
 ]
 
+// エンタープライズ版判定（20人以上）
+const isEnterprise = (members: number) => members >= 20
+
 function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }) {
+  const enterprise = isEnterprise(album.members)
+  
   return (
     <Link href={`/album/${album.id}`}>
       <div
@@ -76,6 +167,15 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
             `,
           }}
         >
+          {/* エンタープライズ版インジケーター（さりげなく） */}
+          {enterprise && (
+            <div 
+              className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: "#c9a87c" }}
+              title="Team"
+            />
+          )}
+          
           {/* Spine edge highlight */}
           <div 
             className="absolute left-0 top-0 bottom-0 w-0.5 rounded-l-sm"
@@ -92,17 +192,27 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
             }}
           />
 
-          {/* Title - vertical text */}
-          <div 
-            className="absolute inset-0 flex items-center justify-center p-2"
-            style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
-          >
-            <span 
-              className="text-[11px] font-serif tracking-wider truncate"
-              style={{ color: album.textColor }}
-            >
-              {album.name}
-            </span>
+          {/* Title - vertical text (character by character for mobile compatibility) */}
+          <div className="absolute inset-0 flex items-center justify-center px-1 py-10">
+            <div className="flex flex-col items-center gap-0">
+              {album.name.split("").slice(0, 10).map((char, i) => (
+                <span 
+                  key={i}
+                  className="text-[10px] font-serif leading-[1.3]"
+                  style={{ color: album.textColor }}
+                >
+                  {char}
+                </span>
+              ))}
+              {album.name.length > 10 && (
+                <span 
+                  className="text-[10px] font-serif leading-[1.3]"
+                  style={{ color: album.textColor }}
+                >
+                  ...
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Year label at bottom */}

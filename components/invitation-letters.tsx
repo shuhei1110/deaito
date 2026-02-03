@@ -8,19 +8,19 @@ import { InvitationDetail } from "@/components/invitation-detail"
 const invitations = [
   {
     id: 1,
-    title: "都立高校 2017年卒業 同窓会",
-    from: "AIエージェント「つなぐくん」",
-    date: "2024年3月15日",
-    preview: "あなたと佐藤健さん、鈴木美咲さんが「体育祭のリレー」を閲覧しました...",
+    title: "桜ヶ丘高校 3年A組 同窓会",
+    from: "つなぐ",
+    date: "2026年2月4日",
+    preview: "このアルバムのつなぐポイントが2,847ptを超えました。4人の仲間があなたとの再会を楽しみにしています。",
     matchScore: 92,
     unread: true,
   },
   {
     id: 2,
-    title: "東京大学 2021年卒業 ミニ同窓会",
-    from: "AIエージェント「つなぐくん」",
-    date: "2024年3月12日",
-    preview: "木村梨花さん、斎藤拓也さんがあなたの投稿「修学旅行 in 京都」に興味を...",
+    title: "写真サークル ミニ同窓会",
+    from: "つなぐ",
+    date: "2026年2月2日",
+    preview: "サークルの仲間たちが、あの頃の思い出を振り返っているようです。再会の準備が整いました。",
     matchScore: 87,
     unread: true,
   },
@@ -53,7 +53,7 @@ export function InvitationLetters() {
                   <h3 className="text-sm font-medium truncate">{invitation.title}</h3>
                 </div>
                 <div className="flex items-center gap-1.5 text-[11px] text-foreground/40 mb-2">
-                  <Sparkles className="h-3 w-3" />
+                  <Sparkles className="h-3 w-3" style={{ color: "#c9a87c" }} />
                   <span>{invitation.from}</span>
                 </div>
                 <p className="text-xs text-foreground/50 line-clamp-2 leading-relaxed">

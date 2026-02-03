@@ -17,6 +17,9 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 
+// エンタープライズ版判定（20人以上）
+const isEnterprise = (members: number) => members >= 20
+
 export function MyAlbums() {
   const [searchQuery, setSearchQuery] = useState("")
   const [newAlbumName, setNewAlbumName] = useState("")
@@ -24,30 +27,133 @@ export function MyAlbums() {
   const [newAlbumLocation, setNewAlbumLocation] = useState("")
   const [showSearch, setShowSearch] = useState(false)
 
+  // 西暦順（古い順）でソート済み - albums/page.tsx と統一
   const myAlbums = [
     {
       id: "1",
-      name: "桜ヶ丘高校 3年A組",
-      year: "2017",
+      name: "さくら幼稚園",
+      year: "2005",
       location: "東京都",
-      members: 42,
-      newPhotos: 8,
-      recentActivity: "2時間前",
+      members: 28,
+      newPhotos: 0,
+      recentActivity: "3日前",
+      category: "school" as const,
     },
     {
       id: "2",
-      name: "東京大学 工学部",
+      name: "桜丘小学校",
+      year: "2011",
+      location: "東京都",
+      members: 32,
+      newPhotos: 2,
+      recentActivity: "1日前",
+      category: "school" as const,
+    },
+    {
+      id: "3",
+      name: "桜丘中学校",
+      year: "2014",
+      location: "東京都",
+      members: 35,
+      newPhotos: 0,
+      recentActivity: "5日前",
+      category: "school" as const,
+    },
+    {
+      id: "4",
+      name: "吹奏楽部",
+      year: "2014",
+      location: "東京都",
+      members: 18,
+      newPhotos: 1,
+      recentActivity: "12時間前",
+      category: "club" as const,
+    },
+    {
+      id: "5",
+      name: "桜ヶ丘高校 3年A組",
+      year: "2017",
+      location: "東京都",
+      members: 38,
+      newPhotos: 8,
+      recentActivity: "2時間前",
+      category: "school" as const,
+    },
+    {
+      id: "6",
+      name: "バスケ部",
+      year: "2017",
+      location: "東京都",
+      members: 12,
+      newPhotos: 0,
+      recentActivity: "1週間前",
+      category: "club" as const,
+    },
+    {
+      id: "7",
+      name: "高校の仲良し6人組",
+      year: "2017",
+      location: "東京都",
+      members: 6,
+      newPhotos: 5,
+      recentActivity: "30分前",
+      category: "friends" as const,
+    },
+    {
+      id: "8",
+      name: "写真サークル",
+      year: "2019",
+      location: "東京都",
+      members: 15,
+      newPhotos: 12,
+      recentActivity: "1時間前",
+      category: "circle" as const,
+    },
+    {
+      id: "9",
+      name: "田中研究室",
+      year: "2021",
+      location: "東京都",
+      members: 8,
+      newPhotos: 0,
+      recentActivity: "2日前",
+      category: "seminar" as const,
+    },
+    {
+      id: "10",
+      name: "東京大学工学部",
       year: "2021",
       location: "東京都",
       members: 67,
       newPhotos: 3,
       recentActivity: "1日前",
+      category: "school" as const,
+    },
+    {
+      id: "11",
+      name: "ABC株式会社 2022新卒",
+      year: "2022",
+      location: "東京都",
+      members: 45,
+      newPhotos: 4,
+      recentActivity: "6時間前",
+      category: "company" as const,
+    },
+    {
+      id: "12",
+      name: "大学の飲み仲間",
+      year: "2021",
+      location: "東京都",
+      members: 9,
+      newPhotos: 2,
+      recentActivity: "4時間前",
+      category: "friends" as const,
     },
   ]
 
   const searchableAlbums = [
     {
-      id: 3,
+      id: 13,
       name: "桜丘中学校 2010年卒業",
       year: "2010",
       location: "東京都",
@@ -55,7 +161,7 @@ export function MyAlbums() {
       recentActivity: "3時間前",
     },
     {
-      id: 4,
+      id: 14,
       name: "東京大学 工学部 2018年卒業",
       year: "2018",
       location: "東京都",
@@ -63,7 +169,7 @@ export function MyAlbums() {
       recentActivity: "1日前",
     },
     {
-      id: 5,
+      id: 15,
       name: "桜丘小学校 2004年卒業",
       year: "2004",
       location: "東京都",
@@ -82,40 +188,63 @@ export function MyAlbums() {
         <>
           {/* Album List */}
           <div className="ios-card overflow-hidden">
-            {myAlbums.map((album, index) => (
-              <Link key={album.id} href={`/album/${album.id}`}>
-                <div className={`flex items-center gap-3 p-4 active:bg-foreground/5 transition-colors ${
-                  index !== myAlbums.length - 1 ? "border-b border-foreground/5" : ""
-                }`}>
-                  {/* Album Icon */}
-                  <div className="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center flex-shrink-0">
-                    <span className="text-lg">{album.name.charAt(0)}</span>
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-sm font-medium truncate">{album.name}</h3>
-                      {album.newPhotos > 0 && (
-                        <Badge className="rounded-full px-1.5 py-0 text-[10px] bg-accent text-accent-foreground h-4">
-                          +{album.newPhotos}
-                        </Badge>
+            {myAlbums.map((album, index) => {
+              const enterprise = isEnterprise(album.members)
+              const getCategoryIcon = () => {
+                switch (album.category) {
+                  case "club": return "♪"
+                  case "circle": return "◎"
+                  case "friends": return "♡"
+                  case "seminar": return "◇"
+                  case "company": return "▪"
+                  default: return "○"
+                }
+              }
+              
+              return (
+                <Link key={album.id} href={`/album/${album.id}`}>
+                  <div className={`flex items-center gap-3 p-4 active:bg-foreground/5 transition-colors ${
+                    index !== myAlbums.length - 1 ? "border-b border-foreground/5" : ""
+                  }`}>
+                    {/* Album Icon with category indicator */}
+                    <div className="relative w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center flex-shrink-0">
+                      <span className="text-lg">{album.name.charAt(0)}</span>
+                      {/* エンタープライズ版インジケーター（さりげなく） */}
+                      {enterprise && (
+                        <div 
+                          className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full"
+                          style={{ backgroundColor: "#c9a87c" }}
+                          title="Team"
+                        />
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-[11px] text-foreground/40">
-                      <span className="flex items-center gap-1">
-                        <Users className="h-3 w-3" />
-                        {album.members}
-                      </span>
-                      <span>{album.year}</span>
-                      <span>{album.location}</span>
-                    </div>
-                  </div>
 
-                  <ChevronRight className="h-4 w-4 text-foreground/20 flex-shrink-0" />
-                </div>
-              </Link>
-            ))}
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] opacity-50">{getCategoryIcon()}</span>
+                        <h3 className="text-sm font-medium truncate">{album.name}</h3>
+                        {album.newPhotos > 0 && (
+                          <Badge className="rounded-full px-1.5 py-0 text-[10px] bg-accent text-accent-foreground h-4">
+                            +{album.newPhotos}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 text-[11px] text-foreground/40">
+                        <span className="flex items-center gap-1">
+                          <Users className="h-3 w-3" />
+                          {album.members}
+                        </span>
+                        <span>{album.year}</span>
+                        <span>{album.location}</span>
+                      </div>
+                    </div>
+
+                    <ChevronRight className="h-4 w-4 text-foreground/20 flex-shrink-0" />
+                  </div>
+                </Link>
+              )
+            })}
           </div>
 
           {/* Find Album Button */}
