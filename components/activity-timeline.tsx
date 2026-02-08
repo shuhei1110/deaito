@@ -8,7 +8,7 @@ const mockActivities = [
   {
     id: 1,
     type: "upload",
-    user: { name: "山田 花子", avatar: "/japanese-woman.png" },
+    user: { name: "友達", avatar: null },
     action: "新しい写真をアップロード",
     content: {
       type: "image",
@@ -22,7 +22,7 @@ const mockActivities = [
   {
     id: 2,
     type: "view",
-    user: { name: "佐藤 健", avatar: "/japanese-man-1.jpg" },
+    user: { name: "メンバー", avatar: null },
     action: "写真を閲覧",
     content: {
       type: "image",
@@ -34,7 +34,7 @@ const mockActivities = [
   {
     id: 3,
     type: "like",
-    user: { name: "鈴木 美咲", avatar: "/japanese-woman-2.jpg" },
+    user: { name: "仲間", avatar: null },
     action: "動画にいいね",
     content: {
       type: "video",
@@ -46,7 +46,7 @@ const mockActivities = [
   {
     id: 4,
     type: "comment",
-    user: { name: "高橋 誠", avatar: "/japanese-man-2.jpg" },
+    user: { name: "友達", avatar: null },
     action: "コメント",
     content: {
       type: "image",
@@ -59,7 +59,7 @@ const mockActivities = [
   {
     id: 5,
     type: "upload",
-    user: { name: "伊藤 大輔", avatar: "/japanese-young-man.jpg" },
+    user: { name: "メンバー", avatar: null },
     action: "新しい動画をアップロード",
     content: {
       type: "video",
@@ -73,7 +73,7 @@ const mockActivities = [
   {
     id: 6,
     type: "join",
-    user: { name: "木村 梨花", avatar: "/japanese-woman-3.jpg" },
+    user: { name: "仲間", avatar: null },
     action: "アルバムに参加",
     content: {
       school: "東京大学 工学部",
@@ -130,8 +130,7 @@ export function ActivityTimeline() {
             {/* Avatar */}
             <div className="relative flex-shrink-0">
               <Avatar className="h-10 w-10">
-                <AvatarImage src={activity.user.avatar || "/placeholder.svg"} />
-                <AvatarFallback className="text-xs bg-secondary">{activity.user.name[0]}</AvatarFallback>
+                <AvatarFallback className="text-xs bg-gradient-to-br from-[#e8a87c]/20 to-[#c9a87c]/20 text-[#c9a87c]">?</AvatarFallback>
               </Avatar>
               <div className={`absolute -bottom-1 -right-1 h-5 w-5 rounded-full flex items-center justify-center ${getActivityColor(activity.type)}`}>
                 {getActivityIcon(activity.type)}
@@ -189,8 +188,7 @@ export function ActivityTimeline() {
           >
             <div className="relative flex-shrink-0">
               <Avatar className="h-10 w-10">
-                <AvatarImage src={activity.user.avatar || "/placeholder.svg"} />
-                <AvatarFallback className="text-xs bg-secondary">{activity.user.name[0]}</AvatarFallback>
+                <AvatarFallback className="text-xs bg-gradient-to-br from-[#e8a87c]/20 to-[#c9a87c]/20 text-[#c9a87c]">?</AvatarFallback>
               </Avatar>
               <div className={`absolute -bottom-1 -right-1 h-5 w-5 rounded-full flex items-center justify-center ${getActivityColor(activity.type)}`}>
                 {getActivityIcon(activity.type)}

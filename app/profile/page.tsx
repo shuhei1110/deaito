@@ -12,7 +12,7 @@ export default function ProfilePage() {
         {/* Profile Header */}
         <div className="flex flex-col items-center mb-8">
           <Avatar className="w-24 h-24 border-2 border-foreground/10 mb-4">
-            <AvatarImage src="/japanese-man-1.jpg" alt="田中太郎" />
+            <AvatarImage src="/profile-image-001.png" alt="田中太郎" />
             <AvatarFallback>田中</AvatarFallback>
           </Avatar>
           <h2 className="text-xl font-medium mb-1">田中 太郎</h2>

@@ -14,7 +14,7 @@ const recentActivities = [
   {
     id: 1,
     type: "photo",
-    user: { name: "田中 美咲", avatar: "/japanese-woman-2.jpg" },
+    user: { name: "友達", avatar: null },
     action: "が新しい写真を追加しました",
     album: "桜ヶ丘高校",
     time: "2時間前",
@@ -22,7 +22,7 @@ const recentActivities = [
   {
     id: 2,
     type: "reunion",
-    user: { name: "佐藤 健太", avatar: "/japanese-man-1.jpg" },
+    user: { name: "つなぐ", avatar: null },
     action: "が同窓会を提案しました",
     album: "東京大学工学部",
     time: "5時間前",
@@ -30,7 +30,7 @@ const recentActivities = [
   {
     id: 3,
     type: "comment",
-    user: { name: "鈴木 花子", avatar: "/japanese-woman-3.jpg" },
+    user: { name: "メンバー", avatar: null },
     action: "がコメントしました",
     album: "桜ヶ丘高校",
     time: "1日前",
@@ -74,7 +74,7 @@ export default function Home() {
               終わりのない「つながり」を
             </h2>
             <p className="text-foreground/50 leading-relaxed text-xs max-w-xs mx-auto">
-              AIエージェントと共に、人間関係を円滑にしていく新しい卒業アルバム。
+              ”deaito”は自然な交流を保ち続けられる卒業アルバム。
             </p>
           </div>
 
@@ -115,8 +115,7 @@ export default function Home() {
                   }`}
                 >
                   <Avatar className="h-9 w-9 flex-shrink-0">
-                    <AvatarImage src={activity.user.avatar || "/placeholder.svg"} alt={activity.user.name} />
-                    <AvatarFallback>{activity.user.name.charAt(0)}</AvatarFallback>
+                    <AvatarFallback className="bg-gradient-to-br from-[#e8a87c]/20 to-[#c9a87c]/20 text-[#c9a87c] text-xs">?</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm">

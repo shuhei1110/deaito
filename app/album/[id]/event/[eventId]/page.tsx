@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useState } from "react"
+import { use, useState, useMemo } from "react"
 import Link from "next/link"
 import { IOSLayout } from "@/components/ios-navigation"
 import { Badge } from "@/components/ui/badge"
@@ -88,15 +88,6 @@ const sampleMedia = [
   },
   {
     id: 2,
-    type: "video",
-    url: "/sports-day-video-thumbnail.jpg",
-    title: "記念動画",
-    date: "2014年4月8日",
-    views: 78,
-    likes: 23,
-  },
-  {
-    id: 3,
     type: "image",
     url: "/school-trip-mountain.jpg",
     title: "思い出の一枚",
@@ -105,7 +96,7 @@ const sampleMedia = [
     likes: 31,
   },
   {
-    id: 4,
+    id: 3,
     type: "image",
     url: "/school-festival-stage-performance.jpg",
     title: "みんなで撮影",
@@ -114,7 +105,7 @@ const sampleMedia = [
     likes: 45,
   },
   {
-    id: 5,
+    id: 4,
     type: "image",
     url: "/graduation-ceremony-group-photo.jpg",
     title: "スナップ写真",
@@ -123,15 +114,421 @@ const sampleMedia = [
     likes: 28,
   },
   {
-    id: 6,
-    type: "video",
-    url: "/school-festival-stage-performance.jpg",
-    title: "ハイライト動画",
+    id: 5,
+    type: "image",
+    url: "/gallery-001.png",
+    title: "ギャラリー",
     date: "2014年4月8日",
-    views: 89,
-    likes: 34,
+    views: 34,
+    likes: 8,
+  },
+  {
+    id: 6,
+    type: "image",
+    url: "/gallery-002.png",
+    title: "ギャラリー",
+    date: "2014年4月8日",
+    views: 41,
+    likes: 15,
+  },
+  {
+    id: 7,
+    type: "image",
+    url: "/gallery-003.png",
+    title: "ギャラリー",
+    date: "2014年4月8日",
+    views: 52,
+    likes: 19,
+  },
+  {
+    id: 8,
+    type: "image",
+    url: "/gallery-005.jpeg",
+    title: "ギャラリー",
+    date: "2014年5月12日",
+    views: 28,
+    likes: 11,
+  },
+  {
+    id: 9,
+    type: "image",
+    url: "/gallery-006.jpeg",
+    title: "ギャラリー",
+    date: "2014年5月15日",
+    views: 36,
+    likes: 14,
+  },
+  {
+    id: 10,
+    type: "image",
+    url: "/gallery-007.jpeg",
+    title: "ギャラリー",
+    date: "2014年5月20日",
+    views: 44,
+    likes: 17,
+  },
+  {
+    id: 11,
+    type: "image",
+    url: "/gallery-008.jpeg",
+    title: "ギャラリー",
+    date: "2014年6月3日",
+    views: 39,
+    likes: 12,
+  },
+  {
+    id: 12,
+    type: "image",
+    url: "/gallery-009.jpeg",
+    title: "ギャラリー",
+    date: "2014年6月10日",
+    views: 47,
+    likes: 20,
+  },
+  {
+    id: 13,
+    type: "image",
+    url: "/gallery-010.jpeg",
+    title: "ギャラリー",
+    date: "2014年6月18日",
+    views: 55,
+    likes: 23,
+  },
+  {
+    id: 14,
+    type: "image",
+    url: "/gallery-011.jpeg",
+    title: "ギャラリー",
+    date: "2014年7月5日",
+    views: 31,
+    likes: 9,
+  },
+  {
+    id: 15,
+    type: "image",
+    url: "/gallery-012.jpeg",
+    title: "ギャラリー",
+    date: "2014年7月12日",
+    views: 42,
+    likes: 16,
+  },
+  {
+    id: 16,
+    type: "image",
+    url: "/gallery-013.jpeg",
+    title: "ギャラリー",
+    date: "2014年7月20日",
+    views: 38,
+    likes: 13,
+  },
+  {
+    id: 17,
+    type: "image",
+    url: "/gallery-014.jpeg",
+    title: "ギャラリー",
+    date: "2014年8月2日",
+    views: 49,
+    likes: 18,
+  },
+  {
+    id: 18,
+    type: "image",
+    url: "/gallery-015.jpeg",
+    title: "ギャラリー",
+    date: "2014年8月10日",
+    views: 56,
+    likes: 22,
+  },
+  {
+    id: 19,
+    type: "image",
+    url: "/gallery-016.jpeg",
+    title: "ギャラリー",
+    date: "2014年8月18日",
+    views: 33,
+    likes: 10,
+  },
+  {
+    id: 20,
+    type: "image",
+    url: "/gallery-017.jpeg",
+    title: "ギャラリー",
+    date: "2014年9月5日",
+    views: 45,
+    likes: 17,
+  },
+  {
+    id: 21,
+    type: "image",
+    url: "/gallery-018.jpeg",
+    title: "ギャラリー",
+    date: "2014年9月12日",
+    views: 51,
+    likes: 21,
+  },
+  {
+    id: 22,
+    type: "image",
+    url: "/gallery-019.jpeg",
+    title: "ギャラリー",
+    date: "2014年9月20日",
+    views: 40,
+    likes: 14,
+  },
+  {
+    id: 23,
+    type: "image",
+    url: "/gallery-020.jpeg",
+    title: "ギャラリー",
+    date: "2014年10月3日",
+    views: 48,
+    likes: 19,
+  },
+  {
+    id: 24,
+    type: "image",
+    url: "/gallery-021.jpeg",
+    title: "ギャラリー",
+    date: "2014年10月11日",
+    views: 37,
+    likes: 12,
+  },
+  {
+    id: 25,
+    type: "image",
+    url: "/gallery-022.jpeg",
+    title: "ギャラリー",
+    date: "2014年10月18日",
+    views: 43,
+    likes: 16,
+  },
+  {
+    id: 26,
+    type: "image",
+    url: "/gallery-023.jpeg",
+    title: "ギャラリー",
+    date: "2014年11月2日",
+    views: 54,
+    likes: 24,
+  },
+  {
+    id: 27,
+    type: "image",
+    url: "/gallery-024.jpeg",
+    title: "ギャラリー",
+    date: "2014年11月10日",
+    views: 35,
+    likes: 11,
+  },
+  {
+    id: 28,
+    type: "image",
+    url: "/gallery-025.jpeg",
+    title: "ギャラリー",
+    date: "2014年11月18日",
+    views: 46,
+    likes: 18,
+  },
+  {
+    id: 29,
+    type: "image",
+    url: "/gallery-026.jpeg",
+    title: "ギャラリー",
+    date: "2014年12月5日",
+    views: 50,
+    likes: 20,
+  },
+  {
+    id: 30,
+    type: "image",
+    url: "/gallery-027.jpeg",
+    title: "ギャラリー",
+    date: "2014年12月12日",
+    views: 32,
+    likes: 9,
+  },
+  {
+    id: 31,
+    type: "image",
+    url: "/gallery-028.jpeg",
+    title: "ギャラリー",
+    date: "2014年12月20日",
+    views: 41,
+    likes: 15,
+  },
+  {
+    id: 32,
+    type: "image",
+    url: "/gallery-029.jpeg",
+    title: "ギャラリー",
+    date: "2015年1月8日",
+    views: 53,
+    likes: 22,
+  },
+  {
+    id: 33,
+    type: "image",
+    url: "/gallery-030.jpeg",
+    title: "ギャラリー",
+    date: "2015年1月15日",
+    views: 38,
+    likes: 13,
+  },
+  {
+    id: 34,
+    type: "image",
+    url: "/gallery-031.jpeg",
+    title: "ギャラリー",
+    date: "2015年1月22日",
+    views: 47,
+    likes: 19,
+  },
+  {
+    id: 35,
+    type: "image",
+    url: "/gallery-032.jpeg",
+    title: "ギャラリー",
+    date: "2015年2月5日",
+    views: 44,
+    likes: 17,
+  },
+  {
+    id: 36,
+    type: "image",
+    url: "/gallery-033.jpeg",
+    title: "ギャラリー",
+    date: "2015年2月12日",
+    views: 36,
+    likes: 12,
+  },
+  {
+    id: 37,
+    type: "image",
+    url: "/gallery-034.jpeg",
+    title: "ギャラリー",
+    date: "2015年2月20日",
+    views: 49,
+    likes: 20,
+  },
+  {
+    id: 38,
+    type: "image",
+    url: "/gallery-035.jpeg",
+    title: "ギャラリー",
+    date: "2015年3月5日",
+    views: 55,
+    likes: 23,
+  },
+  {
+    id: 39,
+    type: "image",
+    url: "/gallery-036.jpeg",
+    title: "ギャラリー",
+    date: "2015年3月12日",
+    views: 31,
+    likes: 10,
+  },
+  {
+    id: 40,
+    type: "image",
+    url: "/gallery-037.jpeg",
+    title: "ギャラリー",
+    date: "2015年3月20日",
+    views: 42,
+    likes: 16,
+  },
+  {
+    id: 41,
+    type: "image",
+    url: "/gallery-038.jpeg",
+    title: "ギャラリー",
+    date: "2015年4月3日",
+    views: 48,
+    likes: 18,
+  },
+  {
+    id: 42,
+    type: "image",
+    url: "/gallery-039.jpeg",
+    title: "ギャラリー",
+    date: "2015年4月10日",
+    views: 39,
+    likes: 14,
+  },
+  {
+    id: 43,
+    type: "image",
+    url: "/gallery-040.jpeg",
+    title: "ギャラリー",
+    date: "2015年4月18日",
+    views: 52,
+    likes: 21,
+  },
+  {
+    id: 44,
+    type: "image",
+    url: "/gallery-041.jpeg",
+    title: "ギャラリー",
+    date: "2015年5月2日",
+    views: 45,
+    likes: 17,
+  },
+  {
+    id: 45,
+    type: "image",
+    url: "/gallery-042.jpeg",
+    title: "ギャラリー",
+    date: "2015年5月10日",
+    views: 34,
+    likes: 11,
+  },
+  {
+    id: 46,
+    type: "image",
+    url: "/gallery-043.jpeg",
+    title: "ギャラリー",
+    date: "2015年5月18日",
+    views: 51,
+    likes: 22,
+  },
+  {
+    id: 47,
+    type: "image",
+    url: "/gallery-044.jpeg",
+    title: "ギャラリー",
+    date: "2015年6月5日",
+    views: 40,
+    likes: 15,
+  },
+  {
+    id: 48,
+    type: "image",
+    url: "/gallery-045.jpeg",
+    title: "ギャラリー",
+    date: "2015年6月12日",
+    views: 46,
+    likes: 19,
+  },
+  {
+    id: 49,
+    type: "image",
+    url: "/gallery-046.jpeg",
+    title: "ギャラリー",
+    date: "2015年6月20日",
+    views: 37,
+    likes: 13,
   },
 ]
+
+// 配列をシャッフルする関数
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
 
 // メディア詳細モーダル
 function MediaDetailModal({ 
@@ -448,9 +845,12 @@ export default function EventPage({
   const childEvents = event.children || []
   const hasChildren = childEvents.length > 0
 
+  // メディアをランダムにシャッフル（初回のみ）
+  const shuffledMedia = useMemo(() => shuffleArray(sampleMedia), [])
+
   // 統計
-  const imageCount = sampleMedia.filter(m => m.type === "image").length
-  const videoCount = sampleMedia.filter(m => m.type === "video").length
+  const imageCount = shuffledMedia.filter(m => m.type === "image").length
+  const videoCount = shuffledMedia.filter(m => m.type === "video").length
 
   return (
     <>
@@ -553,7 +953,7 @@ export default function EventPage({
 
         {/* ギャラリーグリッド */}
         <div className="grid grid-cols-2 gap-3 pb-24">
-          {sampleMedia.map((media, index) => (
+          {shuffledMedia.map((media, index) => (
             <button
               key={media.id}
               type="button"

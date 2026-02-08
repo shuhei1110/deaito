@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Sparkles, Calendar, MapPin, Users, Clock, CheckCircle2, ExternalLink, TrendingUp, Heart } from "lucide-react"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import Link from "next/link"
 import { EnvelopeAnimation } from "@/components/envelope-animation"
 
@@ -69,22 +69,31 @@ interface InvitationDetailProps {
 export function InvitationDetail({ invitationId, onClose }: InvitationDetailProps) {
   const [accepted, setAccepted] = useState(false)
   const [showEnvelope, setShowEnvelope] = useState(true)
+  const [showDialog, setShowDialog] = useState(false)
   const invitation = invitationDetails[invitationId as keyof typeof invitationDetails]
+
+  // Crossfade: start showing dialog while envelope is still fading out
+  const handleEnvelopeComplete = useCallback(() => {
+    setShowDialog(true)
+    // Remove envelope after dialog entrance animation settles
+    setTimeout(() => setShowEnvelope(false), 350)
+  }, [])
 
   if (!invitation) return null
 
-  // Show envelope animation first
-  if (showEnvelope) {
-    return (
-      <EnvelopeAnimation 
-        title={invitation.title} 
-        onComplete={() => setShowEnvelope(false)} 
-      />
-    )
-  }
-
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <>
+      {/* Envelope animation – stays mounted briefly during dialog entrance */}
+      {showEnvelope && (
+        <EnvelopeAnimation
+          title={invitation.title}
+          onComplete={handleEnvelopeComplete}
+        />
+      )}
+
+      {/* Dialog – mounts while envelope is fading, creating a crossfade */}
+      {showDialog && (
+      <Dialog open={true} onOpenChange={onClose}>
       <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-[420px] max-h-[85vh] overflow-y-auto rounded-2xl border border-[#e8e4de] p-0 bg-[#fffcf8] shadow-2xl">
         {/* スクリーンリーダー用タイトル（視覚的には非表示） */}
         <DialogTitle className="sr-only">招待状の詳細</DialogTitle>
@@ -267,5 +276,7 @@ export function InvitationDetail({ invitationId, onClose }: InvitationDetailProp
         </div>
       </DialogContent>
     </Dialog>
+      )}
+    </>
   )
 }

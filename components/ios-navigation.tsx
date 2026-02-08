@@ -149,7 +149,7 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
               onClick={() => setProfileOpen(true)}
             >
               <Avatar className="w-8 h-8 border border-foreground/10">
-                <AvatarImage src="/japanese-man-1.jpg" alt="Profile" />
+                <AvatarImage src="/profile-image-001.png" alt="Profile" />
                 <AvatarFallback className="text-xs">田</AvatarFallback>
               </Avatar>
             </button>
@@ -339,7 +339,7 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
         <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-[320px] rounded-2xl border-0 ios-card p-0 gap-0">
           <div className="p-6 text-center border-b border-foreground/5">
             <Avatar className="w-20 h-20 mx-auto border-2 border-foreground/10">
-              <AvatarImage src="/japanese-man-1.jpg" alt="田中太郎" />
+              <AvatarImage src="/profile-image-001.png" alt="田中太郎" />
               <AvatarFallback className="text-2xl">田</AvatarFallback>
             </Avatar>
             <h3 className="text-lg font-medium mt-3">田中太郎</h3>
