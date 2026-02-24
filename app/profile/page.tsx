@@ -4,8 +4,19 @@ import { IOSLayout } from "@/components/ios-navigation"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Settings, Bell, HelpCircle, LogOut } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { createSupabaseBrowserClient } from "@/lib/supabase/client"
 
 export default function ProfilePage() {
+  const router = useRouter()
+
+  const handleSignOut = async () => {
+    const supabase = createSupabaseBrowserClient()
+    await supabase.auth.signOut()
+    router.replace("/auth/login")
+    router.refresh()
+  }
+
   return (
     <IOSLayout breadcrumbs={[{ label: "ホーム", href: "/" }, { label: "プロフィール" }]}>
       <div className="py-6">
@@ -49,7 +60,7 @@ export default function ProfilePage() {
             <HelpCircle className="w-5 h-5 text-foreground/60" />
             <span className="text-sm">ヘルプ</span>
           </Link>
-          <button type="button" className="flex items-center gap-4 p-4 w-full hover:bg-foreground/5 transition-colors text-left">
+          <button type="button" onClick={handleSignOut} className="flex items-center gap-4 p-4 w-full hover:bg-foreground/5 transition-colors text-left">
             <LogOut className="w-5 h-5 text-destructive/60" />
             <span className="text-sm text-destructive">ログアウト</span>
           </button>

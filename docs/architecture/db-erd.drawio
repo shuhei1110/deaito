@@ -1,0 +1,48 @@
+<mxfile host="app.diagrams.net" modified="2026-02-24T00:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="db-erd" name="DB ERD">
+    <mxGraphModel dx="1900" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="10" value="profiles&#xa;- id (uuid, PK, auth.users)&#xa;- username (text, unique)&#xa;- display_name&#xa;- avatar_url&#xa;- bio&#xa;- graduation_year&#xa;- created_at&#xa;- updated_at" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#4A73C9;align=left;spacingLeft=8;" vertex="1" parent="1"><mxGeometry x="40" y="60" width="280" height="220" as="geometry"/></mxCell>
+
+        <mxCell id="20" value="albums&#xa;- id (uuid, PK)&#xa;- owner_id (uuid, FK profiles.id)&#xa;- name&#xa;- category&#xa;- year&#xa;- location&#xa;- description&#xa;- visibility&#xa;- created_at&#xa;- updated_at" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;align=left;spacingLeft=8;" vertex="1" parent="1"><mxGeometry x="400" y="60" width="300" height="220" as="geometry"/></mxCell>
+
+        <mxCell id="30" value="album_members&#xa;- album_id (uuid, PK/FK)&#xa;- user_id (uuid, PK/FK)&#xa;- role&#xa;- membership_status&#xa;- joined_at&#xa;- invited_by&#xa;- created_at" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;align=left;spacingLeft=8;" vertex="1" parent="1"><mxGeometry x="760" y="60" width="300" height="220" as="geometry"/></mxCell>
+
+        <mxCell id="40" value="events&#xa;- id (uuid, PK)&#xa;- album_id (uuid, FK)&#xa;- parent_event_id (uuid, self FK)&#xa;- name&#xa;- description&#xa;- starts_at / ends_at&#xa;- location&#xa;- sort_order&#xa;- created_by&#xa;- created_at&#xa;- updated_at" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;align=left;spacingLeft=8;" vertex="1" parent="1"><mxGeometry x="400" y="340" width="300" height="240" as="geometry"/></mxCell>
+
+        <mxCell id="50" value="media_assets&#xa;- id (uuid, PK)&#xa;- album_id (uuid, FK)&#xa;- event_id (uuid, FK)&#xa;- uploader_id (uuid, FK)&#xa;- bucket&#xa;- object_path&#xa;- media_type&#xa;- mime_type&#xa;- size_bytes&#xa;- captured_at&#xa;- created_at" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;align=left;spacingLeft=8;" vertex="1" parent="1"><mxGeometry x="760" y="340" width="300" height="240" as="geometry"/></mxCell>
+
+        <mxCell id="60" value="media_comments&#xa;- id (uuid, PK)&#xa;- media_id (uuid, FK)&#xa;- user_id (uuid, FK)&#xa;- body&#xa;- created_at&#xa;- updated_at" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;align=left;spacingLeft=8;" vertex="1" parent="1"><mxGeometry x="1120" y="340" width="280" height="180" as="geometry"/></mxCell>
+
+        <mxCell id="61" value="media_reactions&#xa;- id (uuid, PK)&#xa;- media_id (uuid, FK)&#xa;- user_id (uuid, FK)&#xa;- reaction&#xa;- created_at&#xa;(unique media_id+user_id+reaction)" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;align=left;spacingLeft=8;" vertex="1" parent="1"><mxGeometry x="1120" y="540" width="280" height="190" as="geometry"/></mxCell>
+
+        <mxCell id="70" value="connections&#xa;- id (uuid, PK)&#xa;- album_id (uuid, FK)&#xa;- user_low_id (uuid, FK)&#xa;- user_high_id (uuid, FK)&#xa;- strength&#xa;- status&#xa;- created_at&#xa;- updated_at&#xa;(unique album_id+user_low_id+user_high_id)" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;align=left;spacingLeft=8;" vertex="1" parent="1"><mxGeometry x="400" y="640" width="300" height="220" as="geometry"/></mxCell>
+
+        <mxCell id="80" value="invitations&#xa;- id (uuid, PK)&#xa;- album_id (uuid, FK)&#xa;- event_id (uuid, FK nullable)&#xa;- sender_id (uuid, FK)&#xa;- recipient_id (uuid, FK)&#xa;- message&#xa;- status&#xa;- sent_at&#xa;- responded_at&#xa;- created_at" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;align=left;spacingLeft=8;" vertex="1" parent="1"><mxGeometry x="760" y="640" width="300" height="240" as="geometry"/></mxCell>
+
+        <mxCell id="90" value="reunion_proposals&#xa;- id (uuid, PK)&#xa;- album_id (uuid, FK)&#xa;- proposed_by (uuid, FK)&#xa;- title&#xa;- summary&#xa;- proposed_dates (jsonb)&#xa;- location_candidates (jsonb)&#xa;- status&#xa;- created_at&#xa;- updated_at" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;align=left;spacingLeft=8;" vertex="1" parent="1"><mxGeometry x="1120" y="780" width="280" height="220" as="geometry"/></mxCell>
+
+        <mxCell id="100" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="10" target="20"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="101" value="N:M" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="10" target="30"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="102" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="20" target="30"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="103" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="20" target="40"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="104" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="20" target="50"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="105" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="40" target="50"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="106" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="50" target="60"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="107" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="50" target="61"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="108" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="20" target="70"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="109" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="20" target="80"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="110" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="40" target="80"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="111" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="20" target="90"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="112" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="10" target="90"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
