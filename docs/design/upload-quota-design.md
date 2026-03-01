@@ -1,4 +1,4 @@
-# アップロード容量制限 詳細設計（Supabase）
+# アップロード容量制限 詳細設計（GCP Cloud Storage + Supabase）
 
 ## 目的
 
@@ -11,7 +11,7 @@
 - ユーザー合計上限: **256 MiB**
   - `268,435,456` bytes
 - 対象: `media_assets` に登録される画像・動画
-- 保存先: Supabase Storage (`album-media`)
+- 保存先: GCP Cloud Storage（例: `deaito-media` バケット）
 - メタデータ: Supabase PostgreSQL (`media_assets`)
 
 ## 非機能要件
@@ -55,7 +55,7 @@ create table public.user_storage_quotas (
 
 ## アップロード方式（推奨フロー）
 
-直接 `storage.from(...).upload(...)` ではなく、**サーバー経由の予約方式**を使う。
+クライアントからGCSへ直接アップロードせず、**サーバー経由の予約方式（署名URL発行）**を使う。
 
 1. クライアント: アップロード前に `filename`, `size_bytes`, `mime_type`, `album_id`, `event_id` を送信
 2. サーバー（Route Handler / Edge Function）:
@@ -63,8 +63,8 @@ create table public.user_storage_quotas (
    - album membership確認
    - `user_storage_quotas` を `FOR UPDATE` でロック
    - `used_bytes + size_bytes <= quota_bytes` を検証
-   - 問題なければ Storage の signed upload URL を発行
-3. クライアント: signed URLでアップロード
+  - 問題なければ GCS の signed upload URL を発行
+3. クライアント: GCS signed URLでアップロード
 4. サーバー: `media_assets` 挿入 + `used_bytes += size_bytes`
 
 ## 整合性ルール
@@ -93,7 +93,7 @@ Response (200):
 
 ```json
 {
-  "uploadToken": "...",
+  "signedUrl": "...",
   "path": "user/<uid>/album/<albumId>/<uuid>.jpg",
   "maxRemainingBytes": 4567890
 }
@@ -113,11 +113,11 @@ Response (409):
 - アップロード完了後に呼ぶ
 - `media_assets` 登録と `used_bytes` 更新を行う
 
-## RLS/権限方針
+## 権限方針
 
-- Storage操作は原則 signed URL 経由
-- `service_role` はサーバーのみ利用
-- `anon` / `authenticated` 側はRLSで最小権限
+- DB操作は Supabase RLS で制御
+- GCS操作は signed URL + サーバー側認可で制御
+- GCPサービスアカウント鍵はサーバー環境変数のみで管理
 
 ## 監視項目
 
@@ -140,18 +140,8 @@ Response (409):
 - DBにパスワードや秘密鍵を保存しない
 - `NEXT_PUBLIC_*` には公開してよい値のみ置く
 - `SUPABASE_SERVICE_ROLE_KEY` はサーバー限定
+- GCPサービスアカウントJSONはリポジトリに保存しない
 
-## Future Work（将来拡張）
+## 将来拡張（任意）
 
-Supabaseの無料枠制約や将来的なメディア増加に備え、以下を将来対応として検討する。
-
-- メディア本体保存先を Supabase Storage から S3 / Cloudflare R2 へ移行
-- 認証・DB・RLS は Supabase を継続利用
-- `media_assets` は保存先非依存のメタデータ（provider, bucket, object_path）を保持
-- アップロードは「署名URL発行 → クライアント直送」の方式を維持
-
-移行判断の目安:
-
-- ストレージ使用量増加によりコスト効率が悪化
-- CDN / 配信最適化 / ライフサイクル管理をより細かく制御したい
-- 既存インフラをAWS系へ統一したい
+- マルチクラウド化（S3/R2）へ対応する場合は `media_assets` の provider 切替で段階移行する

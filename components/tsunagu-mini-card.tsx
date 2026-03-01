@@ -6,14 +6,14 @@ import { Sparkles, ChevronRight } from "lucide-react"
 
 interface TsunaguMiniCardProps {
   albumId: string
-  totalPoints?: number
-  targetPoints?: number
+  totalPoints: number
+  targetPoints: number
 }
 
-export function TsunaguMiniCard({ 
-  albumId, 
-  totalPoints = 347, 
-  targetPoints = 500 
+export function TsunaguMiniCard({
+  albumId,
+  totalPoints,
+  targetPoints,
 }: TsunaguMiniCardProps) {
   const [isClient, setIsClient] = useState(false)
   const progress = Math.min((totalPoints / targetPoints) * 100, 100)

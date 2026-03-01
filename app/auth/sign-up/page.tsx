@@ -1,8 +1,5 @@
 import Link from "next/link"
-import { signUpAction } from "@/app/auth/actions"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { SignUpForm } from "./sign-up-form"
 
 type SearchParams = {
   error?: string
@@ -29,29 +26,7 @@ export default async function SignUpPage({
           </div>
         )}
 
-        <form action={signUpAction} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">メールアドレス</Label>
-            <Input id="email" name="email" type="email" required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">パスワード</Label>
-            <Input id="password" name="password" type="password" required minLength={8} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">パスワード（確認）</Label>
-            <Input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              required
-              minLength={8}
-            />
-          </div>
-          <Button type="submit" className="w-full">
-            登録する
-          </Button>
-        </form>
+        <SignUpForm />
 
         <p className="text-xs text-center text-foreground/60">
           すでにアカウントがありますか？{" "}

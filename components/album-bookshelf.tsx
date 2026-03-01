@@ -3,148 +3,37 @@
 import { useState } from "react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { getSpineColor, type AlbumCategory, type AlbumWithMemberCount } from "@/lib/album-types"
 
-interface Album {
+interface SpineAlbum {
   id: string
   name: string
   year: string
-  location: string
   members: number
   color: string
   textColor: string
-  category?: "school" | "club" | "circle" | "friends" | "seminar" | "company"
+  category: AlbumCategory
 }
 
-// 西暦順（古い順）でソート済み - albums/page.tsx と統一
-const albums: Album[] = [
-  {
-    id: "1",
-    name: "さくら幼稚園",
-    year: "2005",
-    location: "東京都",
-    members: 28,
-    color: "#f5e6d8",
-    textColor: "#5c5248",
-    category: "school",
-  },
-  {
-    id: "2",
-    name: "桜丘小学校",
-    year: "2011",
-    location: "東京都",
-    members: 32,
-    color: "#e8ddd0",
-    textColor: "#5c5248",
-    category: "school",
-  },
-  {
-    id: "3",
-    name: "桜丘中学校",
-    year: "2014",
-    location: "東京都",
-    members: 35,
-    color: "#e5d8c8",
-    textColor: "#5c5248",
-    category: "school",
-  },
-  {
-    id: "4",
-    name: "吹奏楽部",
-    year: "2014",
-    location: "東京都",
-    members: 18,
-    color: "#ddd2c4",
-    textColor: "#5c5248",
-    category: "club",
-  },
-  {
-    id: "5",
-    name: "桜ヶ丘高校 3年A組",
-    year: "2017",
-    location: "東京都",
-    members: 38,
-    color: "#d9cfc2",
-    textColor: "#5c5248",
-    category: "school",
-  },
-  {
-    id: "6",
-    name: "バスケ部",
-    year: "2017",
-    location: "東京都",
-    members: 12,
-    color: "#e2d5c6",
-    textColor: "#5c5248",
-    category: "club",
-  },
-  {
-    id: "7",
-    name: "高校の仲良し6人組",
-    year: "2017",
-    location: "東京都",
-    members: 6,
-    color: "#f0e5d8",
-    textColor: "#5c5248",
-    category: "friends",
-  },
-  {
-    id: "8",
-    name: "写真サークル",
-    year: "2019",
-    location: "東京都",
-    members: 15,
-    color: "#dcd1c3",
-    textColor: "#5c5248",
-    category: "circle",
-  },
-  {
-    id: "9",
-    name: "田中研究室",
-    year: "2021",
-    location: "東京都",
-    members: 8,
-    color: "#e6dace",
-    textColor: "#5c5248",
-    category: "seminar",
-  },
-  {
-    id: "10",
-    name: "東京大学工学部",
-    year: "2021",
-    location: "東京都",
-    members: 67,
-    color: "#d8cdc0",
-    textColor: "#5c5248",
-    category: "school",
-  },
-  {
-    id: "11",
-    name: "ABC株式会社 2022新卒",
-    year: "2022",
-    location: "東京都",
-    members: 45,
-    color: "#e3d6c7",
-    textColor: "#5c5248",
-    category: "company",
-  },
-  {
-    id: "12",
-    name: "大学の飲み仲間",
-    year: "2021",
-    location: "東京都",
-    members: 9,
-    color: "#ede2d5",
-    textColor: "#5c5248",
-    category: "friends",
-  },
-]
+function toSpineAlbum(album: AlbumWithMemberCount): SpineAlbum {
+  const { color, textColor } = getSpineColor(album.id)
+  return {
+    id: album.id,
+    name: album.name,
+    year: album.year?.toString() ?? "",
+    members: album.member_count,
+    color,
+    textColor,
+    category: album.category,
+  }
+}
 
 // エンタープライズ版判定（20人以上）
 const isEnterprise = (members: number) => members >= 20
 
-function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }) {
+function AlbumSpine({ album, isSelected }: { album: SpineAlbum; isSelected: boolean }) {
   const enterprise = isEnterprise(album.members)
-  
+
   return (
     <Link href={`/album/${album.id}`}>
       <div
@@ -169,26 +58,26 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
         >
           {/* エンタープライズ版インジケーター（さりげなく） */}
           {enterprise && (
-            <div 
+            <div
               className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full"
               style={{ backgroundColor: "#c9a87c" }}
               title="Team"
             />
           )}
-          
+
           {/* Spine edge highlight */}
-          <div 
+          <div
             className="absolute left-0 top-0 bottom-0 w-0.5 rounded-l-sm"
             style={{
-              background: `linear-gradient(to right, rgba(0,0,0,0.1), transparent)`,
+              background: "linear-gradient(to right, rgba(0,0,0,0.1), transparent)",
             }}
           />
-          
+
           {/* Spine edge right */}
-          <div 
+          <div
             className="absolute right-0 top-0 bottom-0 w-0.5 rounded-r-sm"
             style={{
-              background: `linear-gradient(to left, rgba(0,0,0,0.08), transparent)`,
+              background: "linear-gradient(to left, rgba(0,0,0,0.08), transparent)",
             }}
           />
 
@@ -196,7 +85,7 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
           <div className="absolute inset-0 flex items-center justify-center px-1 py-10">
             <div className="flex flex-col items-center gap-0">
               {album.name.split("").slice(0, 10).map((char, i) => (
-                <span 
+                <span
                   key={i}
                   className="text-[10px] font-serif leading-[1.3]"
                   style={{ color: album.textColor }}
@@ -205,7 +94,7 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
                 </span>
               ))}
               {album.name.length > 10 && (
-                <span 
+                <span
                   className="text-[10px] font-serif leading-[1.3]"
                   style={{ color: album.textColor }}
                 >
@@ -216,11 +105,11 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
           </div>
 
           {/* Year label at bottom */}
-          <div 
+          <div
             className="absolute bottom-3 left-0 right-0 flex justify-center"
             style={{ writingMode: "horizontal-tb" }}
           >
-            <span 
+            <span
               className="text-[9px] opacity-60"
               style={{ color: album.textColor }}
             >
@@ -229,11 +118,11 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
           </div>
 
           {/* Decorative line */}
-          <div 
+          <div
             className="absolute top-4 left-2 right-2 h-px opacity-20"
             style={{ backgroundColor: album.textColor }}
           />
-          <div 
+          <div
             className="absolute bottom-8 left-2 right-2 h-px opacity-20"
             style={{ backgroundColor: album.textColor }}
           />
@@ -243,8 +132,9 @@ function AlbumSpine({ album, isSelected }: { album: Album; isSelected: boolean }
   )
 }
 
-export function AlbumBookshelf() {
+export function AlbumBookshelf({ albums }: { albums: AlbumWithMemberCount[] }) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const spineAlbums = albums.map(toSpineAlbum)
 
   return (
     <div className="space-y-6">
@@ -255,53 +145,61 @@ export function AlbumBookshelf() {
       </div>
 
       {/* Bookshelf */}
-      <div className="relative">
-        {/* Shelf background */}
-        <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-b from-[#c9bba8] to-[#b8a896] rounded-sm" />
-        
-        {/* Books container with horizontal scroll */}
-        <div 
-          className="flex gap-1.5 pb-3 overflow-x-auto scrollbar-hide px-1"
-          style={{ 
-            scrollSnapType: "x mandatory",
-            WebkitOverflowScrolling: "touch",
-          }}
-        >
-          {albums.map((album) => (
-            <div 
-              key={album.id} 
-              className="scroll-snap-align-start"
-              onMouseEnter={() => setSelectedId(album.id)}
-              onMouseLeave={() => setSelectedId(null)}
-            >
-              <AlbumSpine 
-                album={album} 
-                isSelected={selectedId === album.id}
-              />
-            </div>
-          ))}
-          
-          {/* Add new album placeholder */}
-          <Link href="/albums">
-            <div className="flex-shrink-0 w-14 h-52 rounded-sm border border-dashed border-foreground/15 flex items-center justify-center cursor-pointer hover:border-foreground/25 hover:bg-foreground/3 transition-colors">
-              <div 
-                className="text-foreground/25 text-xl font-light"
-                style={{ writingMode: "vertical-rl" }}
+      {spineAlbums.length > 0 ? (
+        <div className="relative">
+          {/* Shelf background */}
+          <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-b from-[#c9bba8] to-[#b8a896] rounded-sm" />
+
+          {/* Books container with horizontal scroll */}
+          <div
+            className="flex gap-1.5 pb-3 overflow-x-auto scrollbar-hide px-1"
+            style={{
+              scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
+            {spineAlbums.map((album) => (
+              <div
+                key={album.id}
+                className="scroll-snap-align-start"
+                onMouseEnter={() => setSelectedId(album.id)}
+                onMouseLeave={() => setSelectedId(null)}
               >
-                +
+                <AlbumSpine
+                  album={album}
+                  isSelected={selectedId === album.id}
+                />
               </div>
-            </div>
-          </Link>
+            ))}
+
+            {/* Add new album placeholder */}
+            <Link href="/albums">
+              <div className="flex-shrink-0 w-14 h-52 rounded-sm border border-dashed border-foreground/15 flex items-center justify-center cursor-pointer hover:border-foreground/25 hover:bg-foreground/3 transition-colors">
+                <div
+                  className="text-foreground/25 text-xl font-light"
+                  style={{ writingMode: "vertical-rl" }}
+                >
+                  +
+                </div>
+              </div>
+            </Link>
+          </div>
+
+          {/* Shelf front edge */}
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-b from-[#d4c6b4] to-[#c4b6a4] rounded-b-sm" />
         </div>
+      ) : (
+        <div className="py-8 text-center">
+          <p className="text-foreground/40 text-sm mb-2">まだアルバムがありません</p>
+          <Link href="/albums" className="text-xs text-accent">アルバムを作成・検索する</Link>
+        </div>
+      )}
 
-        {/* Shelf front edge */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-b from-[#d4c6b4] to-[#c4b6a4] rounded-b-sm" />
-      </div>
-
-      {/* Hint text */}
-      <p className="text-center text-[11px] text-foreground/30">
-        アルバムをタップして開く
-      </p>
+      {spineAlbums.length > 0 && (
+        <p className="text-center text-[11px] text-foreground/30">
+          アルバムをタップして開く
+        </p>
+      )}
     </div>
   )
 }

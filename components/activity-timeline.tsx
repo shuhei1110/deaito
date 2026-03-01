@@ -2,85 +2,47 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Upload, Heart, MessageCircle, UserPlus, Video, ImageIcon, Eye } from "lucide-react"
+import { Upload, Heart, MessageCircle, UserPlus, Video, ImageIcon } from "lucide-react"
+import type { HomeActivity } from "@/lib/album-types"
 
-const mockActivities = [
-  {
-    id: 1,
-    type: "upload",
-    user: { name: "友達", avatar: null },
-    action: "新しい写真をアップロード",
-    content: {
-      type: "image",
-      title: "卒業式の集合写真",
-      thumbnail: "/graduation-ceremony-group-photo.jpg",
-      school: "東京大学",
-    },
-    time: "10分前",
-    engagement: { views: 12, likes: 3 },
-  },
-  {
-    id: 2,
-    type: "view",
-    user: { name: "メンバー", avatar: null },
-    action: "写真を閲覧",
-    content: {
-      type: "image",
-      title: "体育祭のリレー",
-      school: "桜ヶ丘高校",
-    },
-    time: "30分前",
-  },
-  {
-    id: 3,
-    type: "like",
-    user: { name: "仲間", avatar: null },
-    action: "動画にいいね",
-    content: {
-      type: "video",
-      title: "文化祭のバンド演奏",
-      school: "桜ヶ丘高校",
-    },
-    time: "1時間前",
-  },
-  {
-    id: 4,
-    type: "comment",
-    user: { name: "友達", avatar: null },
-    action: "コメント",
-    content: {
-      type: "image",
-      title: "修学旅行 in 京都",
-      school: "桜ヶ丘高校",
-      comment: "懐かしい！あの時は楽しかったね",
-    },
-    time: "2時間前",
-  },
-  {
-    id: 5,
-    type: "upload",
-    user: { name: "メンバー", avatar: null },
-    action: "新しい動画をアップロード",
-    content: {
-      type: "video",
-      title: "体育祭のリレー",
-      thumbnail: "/sports-day-video-thumbnail.jpg",
-      school: "桜ヶ丘高校",
-    },
-    time: "3時間前",
-    engagement: { views: 45, likes: 12, comments: 5 },
-  },
-  {
-    id: 6,
-    type: "join",
-    user: { name: "仲間", avatar: null },
-    action: "アルバムに参加",
-    content: {
-      school: "東京大学 工学部",
-    },
-    time: "5時間前",
-  },
-]
+function groupActivitiesByDate(
+  activities: HomeActivity[]
+): { label: string; items: HomeActivity[] }[] {
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const yesterday = new Date(today)
+  yesterday.setDate(yesterday.getDate() - 1)
+
+  const groups: Map<string, HomeActivity[]> = new Map()
+
+  for (const activity of activities) {
+    const actDate = new Date(activity.createdAt)
+    const actDay = new Date(
+      actDate.getFullYear(),
+      actDate.getMonth(),
+      actDate.getDate()
+    )
+
+    let label: string
+    if (actDay.getTime() >= today.getTime()) {
+      label = "今日"
+    } else if (actDay.getTime() >= yesterday.getTime()) {
+      label = "昨日"
+    } else {
+      label = `${actDay.getMonth() + 1}月${actDay.getDate()}日`
+    }
+
+    if (!groups.has(label)) {
+      groups.set(label, [])
+    }
+    groups.get(label)!.push(activity)
+  }
+
+  return Array.from(groups.entries()).map(([label, items]) => ({
+    label,
+    items,
+  }))
+}
 
 const getActivityIcon = (type: string) => {
   switch (type) {
@@ -92,10 +54,8 @@ const getActivityIcon = (type: string) => {
       return <MessageCircle className="h-3 w-3" />
     case "join":
       return <UserPlus className="h-3 w-3" />
-    case "view":
-      return <Eye className="h-3 w-3" />
     default:
-      return <Eye className="h-3 w-3" />
+      return <Upload className="h-3 w-3" />
   }
 }
 
@@ -112,120 +72,104 @@ const getActivityColor = (type: string) => {
   }
 }
 
-export function ActivityTimeline() {
+export function ActivityTimeline({
+  activities,
+}: {
+  activities: HomeActivity[]
+}) {
+  if (activities.length === 0) {
+    return (
+      <div className="ios-card p-8 text-center text-foreground/40 text-sm">
+        アクティビティはまだありません
+      </div>
+    )
+  }
+
+  const groups = groupActivitiesByDate(activities)
+
   return (
     <div className="space-y-4">
-      {/* Grouped by time */}
-      <div className="ios-card overflow-hidden">
-        <div className="px-4 py-2.5 bg-secondary/30 text-[11px] text-foreground/50 font-medium">
-          今日
-        </div>
-        {mockActivities.slice(0, 4).map((activity, index) => (
-          <div 
-            key={activity.id} 
-            className={`flex items-start gap-3 p-4 ${
-              index !== 3 ? "border-b border-foreground/5" : ""
-            }`}
-          >
-            {/* Avatar */}
-            <div className="relative flex-shrink-0">
-              <Avatar className="h-10 w-10">
-                <AvatarFallback className="text-xs bg-gradient-to-br from-[#e8a87c]/20 to-[#c9a87c]/20 text-[#c9a87c]">?</AvatarFallback>
-              </Avatar>
-              <div className={`absolute -bottom-1 -right-1 h-5 w-5 rounded-full flex items-center justify-center ${getActivityColor(activity.type)}`}>
-                {getActivityIcon(activity.type)}
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-sm">
-                  <span className="font-medium">{activity.user.name}</span>
-                  <span className="text-foreground/50"> {activity.action}</span>
-                </p>
-                <span className="text-[10px] text-foreground/30 whitespace-nowrap">{activity.time}</span>
-              </div>
-
-              {activity.content && activity.type !== "join" && (
-                <div className="mt-2 p-3 bg-secondary/30 rounded-xl">
-                  <div className="flex items-center gap-2 text-xs text-foreground/70">
-                    {activity.content.type === "video" ? (
-                      <Video className="h-3.5 w-3.5 text-foreground/40" />
-                    ) : (
-                      <ImageIcon className="h-3.5 w-3.5 text-foreground/40" />
-                    )}
-                    <span>{activity.content.title}</span>
-                  </div>
-                  {activity.content.comment && (
-                    <p className="text-xs text-foreground/50 mt-2 pl-2 border-l-2 border-foreground/10">
-                      {activity.content.comment}
-                    </p>
+      {groups.map((group) => (
+        <div key={group.label} className="ios-card overflow-hidden">
+          <div className="px-4 py-2.5 bg-secondary/30 text-[11px] text-foreground/50 font-medium">
+            {group.label}
+          </div>
+          {group.items.map((activity, index) => (
+            <div
+              key={activity.id}
+              className={`flex items-start gap-3 p-4 ${
+                index !== group.items.length - 1
+                  ? "border-b border-foreground/5"
+                  : ""
+              }`}
+            >
+              {/* Avatar */}
+              <div className="relative flex-shrink-0">
+                <Avatar className="h-10 w-10">
+                  {activity.user.avatar_url && (
+                    <AvatarImage src={activity.user.avatar_url} />
                   )}
+                  <AvatarFallback className="text-xs bg-gradient-to-br from-[#e8a87c]/20 to-[#c9a87c]/20 text-[#c9a87c]">
+                    {activity.user.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div
+                  className={`absolute -bottom-1 -right-1 h-5 w-5 rounded-full flex items-center justify-center ${getActivityColor(activity.type)}`}
+                >
+                  {getActivityIcon(activity.type)}
                 </div>
-              )}
+              </div>
 
-              {activity.type === "join" && activity.content && (
-                <Badge variant="secondary" className="mt-2 text-[10px] font-normal rounded-full bg-secondary/50 text-foreground/50 border-0">
-                  {activity.content.school}
-                </Badge>
-              )}
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-sm">
+                    <span className="font-medium">{activity.user.name}</span>
+                    <span className="text-foreground/50">
+                      {" "}
+                      {activity.action}
+                    </span>
+                  </p>
+                  <span className="text-[10px] text-foreground/30 whitespace-nowrap">
+                    {activity.timeAgo}
+                  </span>
+                </div>
+
+                {activity.type !== "join" &&
+                  (activity.content.type || activity.content.title) && (
+                    <div className="mt-2 p-3 bg-secondary/30 rounded-xl">
+                      <div className="flex items-center gap-2 text-xs text-foreground/70">
+                        {activity.content.type === "video" ? (
+                          <Video className="h-3.5 w-3.5 text-foreground/40" />
+                        ) : (
+                          <ImageIcon className="h-3.5 w-3.5 text-foreground/40" />
+                        )}
+                        <span>
+                          {activity.content.title ||
+                            activity.content.albumName}
+                        </span>
+                      </div>
+                      {activity.content.comment && (
+                        <p className="text-xs text-foreground/50 mt-2 pl-2 border-l-2 border-foreground/10">
+                          {activity.content.comment}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                {activity.type === "join" && (
+                  <Badge
+                    variant="secondary"
+                    className="mt-2 text-[10px] font-normal rounded-full bg-secondary/50 text-foreground/50 border-0"
+                  >
+                    {activity.content.albumName}
+                  </Badge>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="ios-card overflow-hidden">
-        <div className="px-4 py-2.5 bg-secondary/30 text-[11px] text-foreground/50 font-medium">
-          昨日
+          ))}
         </div>
-        {mockActivities.slice(4).map((activity, index) => (
-          <div 
-            key={activity.id} 
-            className={`flex items-start gap-3 p-4 ${
-              index !== mockActivities.slice(4).length - 1 ? "border-b border-foreground/5" : ""
-            }`}
-          >
-            <div className="relative flex-shrink-0">
-              <Avatar className="h-10 w-10">
-                <AvatarFallback className="text-xs bg-gradient-to-br from-[#e8a87c]/20 to-[#c9a87c]/20 text-[#c9a87c]">?</AvatarFallback>
-              </Avatar>
-              <div className={`absolute -bottom-1 -right-1 h-5 w-5 rounded-full flex items-center justify-center ${getActivityColor(activity.type)}`}>
-                {getActivityIcon(activity.type)}
-              </div>
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-sm">
-                  <span className="font-medium">{activity.user.name}</span>
-                  <span className="text-foreground/50"> {activity.action}</span>
-                </p>
-                <span className="text-[10px] text-foreground/30 whitespace-nowrap">{activity.time}</span>
-              </div>
-
-              {activity.content && activity.type !== "join" && (
-                <div className="mt-2 p-3 bg-secondary/30 rounded-xl">
-                  <div className="flex items-center gap-2 text-xs text-foreground/70">
-                    {activity.content.type === "video" ? (
-                      <Video className="h-3.5 w-3.5 text-foreground/40" />
-                    ) : (
-                      <ImageIcon className="h-3.5 w-3.5 text-foreground/40" />
-                    )}
-                    <span>{activity.content.title}</span>
-                  </div>
-                </div>
-              )}
-
-              {activity.type === "join" && activity.content && (
-                <Badge variant="secondary" className="mt-2 text-[10px] font-normal rounded-full bg-secondary/50 text-foreground/50 border-0">
-                  {activity.content.school}
-                </Badge>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+      ))}
     </div>
   )
 }

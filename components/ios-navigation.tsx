@@ -1,106 +1,90 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Home, Images, Mail, User, Settings, Search, Bell, X, ChevronRight, MessageSquare, Calendar, Heart, UserPlus } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Images, User, Settings, Search, Bell, X, ChevronRight, Calendar, Loader2, HelpCircle } from "lucide-react"
+import { createSupabaseBrowserClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { BottomBar } from "@/components/bottom-bar"
+import { searchAction } from "@/app/actions/search"
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+
+export type TopBarProfile = {
+  display_name: string
+  avatar_url: string | null
+  email: string
+}
 
 interface TopBarProps {
   title?: string
   showSearch?: boolean
   notificationCount?: number
+  userProfile?: TopBarProfile
 }
 
-// Notifications data
-const notifications = [
-  {
-    id: "1",
-    type: "invitation",
-    title: "新しい招待状",
-    description: "田中美咲さんから同窓会の招待が届きました",
-    time: "2時間前",
-    unread: true,
-    icon: Mail,
-  },
-  {
-    id: "2",
-    type: "connection",
-    title: "友達リクエスト",
-    description: "鈴木一郎さんがつながりをリクエストしています",
-    time: "5時間前",
-    unread: true,
-    icon: UserPlus,
-  },
-  {
-    id: "3",
-    type: "event",
-    title: "イベントリマインダー",
-    description: "「2024年桜ヶ丘高校同窓会」まであと3日",
-    time: "1日前",
-    unread: false,
-    icon: Calendar,
-  },
-  {
-    id: "4",
-    type: "like",
-    title: "いいね",
-    description: "佐藤花子さんがあなたの写真にいいねしました",
-    time: "2日前",
-    unread: false,
-    icon: Heart,
-  },
-  {
-    id: "5",
-    type: "message",
-    title: "新しいメッセージ",
-    description: "高橋健太さんからメッセージが届きました",
-    time: "3日前",
-    unread: false,
-    icon: MessageSquare,
-  },
-]
-
-// Search results
-const searchResults = {
-  albums: [
-    { id: "1", name: "桜ヶ丘高校 3年A組", year: "2017", type: "album" },
-    { id: "2", name: "東京大学工学部", year: "2021", type: "album" },
-  ],
-  people: [
-    { id: "1", name: "田中美咲", school: "桜ヶ丘高校", avatar: "/japanese-woman-2.jpg" },
-    { id: "2", name: "鈴木一郎", school: "東京大学", avatar: "/japanese-man-2.jpg" },
-    { id: "3", name: "佐藤花子", school: "桜ヶ丘高校", avatar: "/japanese-woman-3.jpg" },
-  ],
-  events: [
-    { id: "1", name: "2024年桜ヶ丘高校同窓会", date: "2024/12/15", type: "event" },
-  ],
+type SearchResults = {
+  albums: { id: string; name: string; year: number | null }[]
+  people: { id: string; display_name: string; username: string | null; avatar_url: string | null }[]
+  events: { id: string; album_id: string; name: string; starts_at: string | null }[]
 }
 
-export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopBarProps) {
+const emptyResults: SearchResults = { albums: [], people: [], events: [] }
+
+export function TopBar({ title, showSearch = true, notificationCount = 0, userProfile }: TopBarProps) {
+  const router = useRouter()
   const [searchOpen, setSearchOpen] = useState(false)
-  const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [searchResults, setSearchResults] = useState<SearchResults>(emptyResults)
+  const [searchLoading, setSearchLoading] = useState(false)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const filteredResults = searchQuery.length > 0 ? {
-    albums: searchResults.albums.filter(a => a.name.includes(searchQuery)),
-    people: searchResults.people.filter(p => p.name.includes(searchQuery) || p.school.includes(searchQuery)),
-    events: searchResults.events.filter(e => e.name.includes(searchQuery)),
-  } : { albums: [], people: [], events: [] }
+  const fetchSearch = useCallback(async (q: string) => {
+    if (q.length < 2) {
+      setSearchResults(emptyResults)
+      setSearchLoading(false)
+      return
+    }
+    setSearchLoading(true)
+    try {
+      const data = await searchAction(q)
+      setSearchResults(data)
+    } catch {
+      // ignore
+    } finally {
+      setSearchLoading(false)
+    }
+  }, [])
 
-  const hasResults = filteredResults.albums.length > 0 || filteredResults.people.length > 0 || filteredResults.events.length > 0
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    if (searchQuery.length < 2) {
+      setSearchResults(emptyResults)
+      return
+    }
+    setSearchLoading(true)
+    debounceRef.current = setTimeout(() => fetchSearch(searchQuery), 300)
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [searchQuery, fetchSearch])
+
+  const handleSignOut = async () => {
+    const supabase = createSupabaseBrowserClient()
+    await supabase.auth.signOut()
+    router.replace("/auth/login")
+    router.refresh()
+  }
+
+  const hasResults = searchResults.albums.length > 0 || searchResults.people.length > 0 || searchResults.events.length > 0
 
   return (
     <>
@@ -130,11 +114,10 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
                 <Search className="w-5 h-5 text-foreground/60" />
               </button>
             )}
-            <button 
-              type="button"
+            <Link
+              href="/notifications"
               className="p-2 rounded-full hover:bg-foreground/5 transition-colors relative"
               aria-label="Notifications"
-              onClick={() => setNotificationsOpen(true)}
             >
               <Bell className="w-5 h-5 text-foreground/60" />
               {notificationCount > 0 && (
@@ -142,15 +125,19 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
                   {notificationCount}
                 </span>
               )}
-            </button>
-            <button 
+            </Link>
+            <button
               type="button"
               className="p-1"
               onClick={() => setProfileOpen(true)}
             >
               <Avatar className="w-8 h-8 border border-foreground/10">
-                <AvatarImage src="/profile-image-001.png" alt="Profile" />
-                <AvatarFallback className="text-xs">田</AvatarFallback>
+                {userProfile?.avatar_url && (
+                  <AvatarImage src={userProfile.avatar_url} alt={userProfile.display_name} />
+                )}
+                <AvatarFallback className="text-xs">
+                  {userProfile?.display_name?.charAt(0) ?? "?"}
+                </AvatarFallback>
               </Avatar>
             </button>
           </div>
@@ -158,8 +145,15 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
       </header>
 
       {/* Search Modal */}
-      <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
-        <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-[500px] rounded-2xl border-0 ios-card p-0 gap-0">
+      <Dialog open={searchOpen} onOpenChange={(open) => {
+        setSearchOpen(open)
+        if (!open) {
+          setSearchQuery("")
+          setSearchResults(emptyResults)
+        }
+      }}>
+        <DialogContent showCloseButton={false} className="sm:max-w-[500px] p-0 gap-0">
+          <DialogTitle className="sr-only">検索</DialogTitle>
           <div className="p-4 border-b border-foreground/5">
             <div className="flex items-center gap-3">
               <Search className="w-5 h-5 text-foreground/30 flex-shrink-0" />
@@ -183,9 +177,13 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
           </div>
 
           <div className="max-h-[60vh] overflow-y-auto">
-            {!searchQuery ? (
+            {!searchQuery || searchQuery.length < 2 ? (
               <div className="p-6 text-center text-foreground/40 text-sm">
-                検索キーワードを入力してください
+                2文字以上で検索できます
+              </div>
+            ) : searchLoading ? (
+              <div className="p-6 flex justify-center">
+                <Loader2 className="w-5 h-5 animate-spin text-foreground/30" />
               </div>
             ) : !hasResults ? (
               <div className="p-6 text-center text-foreground/40 text-sm">
@@ -194,12 +192,12 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
             ) : (
               <>
                 {/* People */}
-                {filteredResults.people.length > 0 && (
+                {searchResults.people.length > 0 && (
                   <div>
                     <div className="px-4 py-2 text-[11px] text-foreground/40 uppercase tracking-wider bg-secondary/30">
                       ユーザー
                     </div>
-                    {filteredResults.people.map((person) => (
+                    {searchResults.people.map((person) => (
                       <Link
                         key={person.id}
                         href={`/user/${person.id}`}
@@ -207,12 +205,16 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
                         onClick={() => setSearchOpen(false)}
                       >
                         <Avatar className="w-10 h-10">
-                          <AvatarImage src={person.avatar || "/placeholder.svg"} alt={person.name} />
-                          <AvatarFallback>{person.name.charAt(0)}</AvatarFallback>
+                          {person.avatar_url && (
+                            <AvatarImage src={person.avatar_url} alt={person.display_name} />
+                          )}
+                          <AvatarFallback>{person.display_name.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
-                          <p className="text-sm font-medium">{person.name}</p>
-                          <p className="text-xs text-foreground/50">{person.school}</p>
+                          <p className="text-sm font-medium">{person.display_name}</p>
+                          {person.username && (
+                            <p className="text-xs text-foreground/50">@{person.username}</p>
+                          )}
                         </div>
                         <ChevronRight className="w-4 h-4 text-foreground/30" />
                       </Link>
@@ -221,12 +223,12 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
                 )}
 
                 {/* Albums */}
-                {filteredResults.albums.length > 0 && (
+                {searchResults.albums.length > 0 && (
                   <div>
                     <div className="px-4 py-2 text-[11px] text-foreground/40 uppercase tracking-wider bg-secondary/30">
                       アルバム
                     </div>
-                    {filteredResults.albums.map((album) => (
+                    {searchResults.albums.map((album) => (
                       <Link
                         key={album.id}
                         href={`/album/${album.id}`}
@@ -238,7 +240,9 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-medium">{album.name}</p>
-                          <p className="text-xs text-foreground/50">{album.year}年卒業</p>
+                          {album.year && (
+                            <p className="text-xs text-foreground/50">{album.year}年卒業</p>
+                          )}
                         </div>
                         <ChevronRight className="w-4 h-4 text-foreground/30" />
                       </Link>
@@ -247,15 +251,15 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
                 )}
 
                 {/* Events */}
-                {filteredResults.events.length > 0 && (
+                {searchResults.events.length > 0 && (
                   <div>
                     <div className="px-4 py-2 text-[11px] text-foreground/40 uppercase tracking-wider bg-secondary/30">
                       イベント
                     </div>
-                    {filteredResults.events.map((event) => (
+                    {searchResults.events.map((event) => (
                       <Link
                         key={event.id}
-                        href={`/event/${event.id}`}
+                        href={`/album/${event.album_id}`}
                         className="flex items-center gap-3 p-4 hover:bg-foreground/5 transition-colors"
                         onClick={() => setSearchOpen(false)}
                       >
@@ -264,7 +268,11 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-medium">{event.name}</p>
-                          <p className="text-xs text-foreground/50">{event.date}</p>
+                          {event.starts_at && (
+                            <p className="text-xs text-foreground/50">
+                              {new Date(event.starts_at).toLocaleDateString("ja-JP")}
+                            </p>
+                          )}
                         </div>
                         <ChevronRight className="w-4 h-4 text-foreground/30" />
                       </Link>
@@ -277,73 +285,25 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
         </DialogContent>
       </Dialog>
 
-      {/* Notifications Modal */}
-      <Dialog open={notificationsOpen} onOpenChange={setNotificationsOpen}>
-        <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-[400px] rounded-2xl border-0 ios-card p-0 gap-0">
-          <DialogHeader className="p-4 border-b border-foreground/5">
-            <DialogTitle className="text-lg font-medium">通知</DialogTitle>
-          </DialogHeader>
-
-          <div className="max-h-[60vh] overflow-y-auto">
-            {notifications.map((notification, index) => {
-              const Icon = notification.icon
-              return (
-                <div
-                  key={notification.id}
-                  className={cn(
-                    "flex items-start gap-3 p-4 hover:bg-foreground/5 transition-colors cursor-pointer",
-                    index !== notifications.length - 1 && "border-b border-foreground/5"
-                  )}
-                >
-                  <div className={cn(
-                    "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0",
-                    notification.unread ? "bg-accent/10" : "bg-secondary"
-                  )}>
-                    <Icon className={cn(
-                      "w-5 h-5",
-                      notification.unread ? "text-accent" : "text-foreground/40"
-                    )} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className={cn(
-                        "text-sm",
-                        notification.unread ? "font-medium" : "font-normal"
-                      )}>{notification.title}</p>
-                      {notification.unread && (
-                        <span className="w-2 h-2 rounded-full bg-accent flex-shrink-0" />
-                      )}
-                    </div>
-                    <p className="text-xs text-foreground/50 mt-0.5 line-clamp-2">{notification.description}</p>
-                    <p className="text-[10px] text-foreground/30 mt-1">{notification.time}</p>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-
-          <div className="p-3 border-t border-foreground/5">
-            <button
-              type="button"
-              className="w-full text-center text-sm text-accent py-2 hover:bg-accent/5 rounded-xl transition-colors"
-              onClick={() => setNotificationsOpen(false)}
-            >
-              すべての通知を見る
-            </button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
       {/* Profile Modal */}
       <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
-        <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-[320px] rounded-2xl border-0 ios-card p-0 gap-0">
+        <DialogContent className="sm:max-w-[320px] p-0 gap-0">
+          <DialogTitle className="sr-only">プロフィール</DialogTitle>
           <div className="p-6 text-center border-b border-foreground/5">
             <Avatar className="w-20 h-20 mx-auto border-2 border-foreground/10">
-              <AvatarImage src="/profile-image-001.png" alt="田中太郎" />
-              <AvatarFallback className="text-2xl">田</AvatarFallback>
+              {userProfile?.avatar_url && (
+                <AvatarImage src={userProfile.avatar_url} alt={userProfile.display_name} />
+              )}
+              <AvatarFallback className="text-2xl">
+                {userProfile?.display_name?.charAt(0) ?? "?"}
+              </AvatarFallback>
             </Avatar>
-            <h3 className="text-lg font-medium mt-3">田中太郎</h3>
-            <p className="text-sm text-foreground/50">tanaka.taro@example.com</p>
+            <h3 className="text-lg font-medium mt-3">
+              {userProfile?.display_name ?? "ユーザー"}
+            </h3>
+            <p className="text-sm text-foreground/50">
+              {userProfile?.email ?? ""}
+            </p>
           </div>
 
           <div className="p-2">
@@ -365,12 +325,22 @@ export function TopBar({ title, showSearch = true, notificationCount = 0 }: TopB
               <span className="text-sm">設定</span>
               <ChevronRight className="w-4 h-4 text-foreground/30 ml-auto" />
             </Link>
+            <Link
+              href="/help"
+              className="flex items-center gap-3 p-3 rounded-xl hover:bg-foreground/5 transition-colors"
+              onClick={() => setProfileOpen(false)}
+            >
+              <HelpCircle className="w-5 h-5 text-foreground/50" />
+              <span className="text-sm">ヘルプ</span>
+              <ChevronRight className="w-4 h-4 text-foreground/30 ml-auto" />
+            </Link>
           </div>
 
           <div className="p-3 border-t border-foreground/5">
             <button
               type="button"
               className="w-full text-center text-sm text-destructive py-2 hover:bg-destructive/5 rounded-xl transition-colors"
+              onClick={handleSignOut}
             >
               ログアウト
             </button>
@@ -428,23 +398,26 @@ interface IOSLayoutProps {
   breadcrumbs?: BreadcrumbItem[]
   showSearch?: boolean
   notificationCount?: number
+  userProfile?: TopBarProfile
 }
 
-export function IOSLayout({ 
-  children, 
-  title, 
+export function IOSLayout({
+  children,
+  title,
   breadcrumbs = [{ label: "ホーム" }],
   showSearch = true,
-  notificationCount = 2
+  notificationCount = 0,
+  userProfile,
 }: IOSLayoutProps) {
   const hasBreadcrumbs = breadcrumbs.length > 1
 
   return (
     <div className="min-h-screen bg-background ios-bg-gradient">
-      <TopBar 
-        title={title} 
-        showSearch={showSearch} 
-        notificationCount={notificationCount} 
+      <TopBar
+        title={title}
+        showSearch={showSearch}
+        notificationCount={notificationCount}
+        userProfile={userProfile}
       />
       <BreadcrumbBar items={breadcrumbs} />
       

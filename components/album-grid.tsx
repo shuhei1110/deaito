@@ -1,154 +1,141 @@
 "use client"
 
-import Link from "next/link"
-import { Badge } from "@/components/ui/badge"
-import { Video, ImageIcon, Heart, Eye, GitBranch } from "lucide-react"
-
-const mockMedia = [
-  {
-    id: 1,
-    type: "image",
-    url: "/graduation-ceremony-group-photo.jpg",
-    title: "卒業式の集合写真",
-    eventId: "graduation",
-    eventName: "卒業式",
-    date: "2017年3月",
-    views: 45,
-    likes: 12,
-  },
-  {
-    id: 2,
-    type: "video",
-    url: "/sports-day-video-thumbnail.jpg",
-    title: "体育祭のリレー",
-    eventId: "sports-2014-relay",
-    eventName: "クラス対抗リレー",
-    date: "2014年9月",
-    views: 78,
-    likes: 23,
-  },
-  {
-    id: 3,
-    type: "image",
-    url: "/school-trip-mountain.jpg",
-    title: "修学旅行 in 京都",
-    eventId: "trip-2015-day1",
-    eventName: "1日目 - 京都",
-    date: "2015年6月",
-    views: 92,
-    likes: 31,
-  },
-  {
-    id: 4,
-    type: "image",
-    url: "/school-festival-stage-performance.jpg",
-    title: "文化祭のバンド演奏",
-    eventId: "culture-2014-stage",
-    eventName: "ステージ発表",
-    date: "2014年11月",
-    views: 156,
-    likes: 45,
-  },
-  {
-    id: 5,
-    type: "image",
-    url: "/graduation-ceremony-group-photo.jpg",
-    title: "入学式の記念撮影",
-    eventId: "entrance-class",
-    eventName: "クラス写真撮影",
-    date: "2014年4月",
-    views: 67,
-    likes: 28,
-  },
-  {
-    id: 6,
-    type: "video",
-    url: "/school-festival-stage-performance.jpg",
-    title: "応援合戦の様子",
-    eventId: "sports-2014-cheer",
-    eventName: "応援合戦",
-    date: "2014年9月",
-    views: 89,
-    likes: 34,
-  },
-]
+import { useState } from "react"
+import { ImageIcon, Camera, Play, Loader2 } from "lucide-react"
+import { MediaViewer } from "@/components/media-viewer"
+import type { MediaAssetRow } from "@/lib/album-types"
 
 interface AlbumGridProps {
-  albumId?: string
+  albumId: string
+  media: MediaAssetRow[]
+  totalCount: number
+  currentUserId?: string | null
+  currentUserRole?: "owner" | "admin" | "member" | null
+  onMediaDeleted?: (mediaId: string) => void
+  onLoadMore?: () => Promise<void>
 }
 
-export function AlbumGrid({ albumId = "1" }: AlbumGridProps) {
-  // Shuffle media for random display
-  const shuffledMedia = [...mockMedia].sort(() => Math.random() - 0.5)
+export function AlbumGrid({ albumId, media, totalCount, currentUserId, currentUserRole, onMediaDeleted, onLoadMore }: AlbumGridProps) {
+  const [viewerOpen, setViewerOpen] = useState(false)
+  const [viewerIndex, setViewerIndex] = useState(0)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+
+  const hasMore = media.length < totalCount
+
+  const handleLoadMore = async () => {
+    if (!onLoadMore || isLoadingMore) return
+    setIsLoadingMore(true)
+    try {
+      await onLoadMore()
+    } finally {
+      setIsLoadingMore(false)
+    }
+  }
+
+  // 空状態
+  if (media.length === 0) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-2 text-xs text-foreground/50">
+          <ImageIcon className="w-4 h-4" />
+          <span>ギャラリー</span>
+        </div>
+        <div className="py-12 text-center">
+          <Camera className="h-8 w-8 text-foreground/20 mx-auto mb-3" />
+          <p className="text-foreground/40 text-sm mb-1">まだ写真・動画がありません</p>
+          <p className="text-foreground/30 text-xs">イベントページからアップロードしましょう</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div>
         <div className="flex items-center gap-2 text-xs text-foreground/50 mb-2">
           <ImageIcon className="w-4 h-4" />
-          <span>ギャラリー</span>
+          <span>ギャラリー ({totalCount})</span>
         </div>
         <p className="text-sm text-foreground/60">
-          タップしてイベントに移動
+          タップして拡大表示
         </p>
       </div>
 
-      {/* Masonry-style Grid */}
-      <div className="grid grid-cols-2 gap-3">
-        {shuffledMedia.map((media, index) => (
-          <Link
-            key={media.id}
-            href={`/album/${albumId}/event/${media.eventId}`}
-            className={`group relative overflow-hidden rounded-xl bg-foreground/5 ${
-              index % 3 === 0 ? "row-span-2 aspect-[3/4]" : "aspect-square"
-            }`}
+      {/* Masonry Grid */}
+      <div className="columns-2 md:columns-3 gap-1.5">
+        {media.map((item, index) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => {
+              setViewerIndex(index)
+              setViewerOpen(true)
+            }}
+            className="relative break-inside-avoid mb-1.5 rounded-xl overflow-hidden bg-foreground/5 block w-full text-left group"
           >
-            {/* Image */}
-            <img
-              src={media.url || "/placeholder.svg"}
-              alt={media.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            
-            {/* Overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            
-            {/* Video badge */}
-            {media.type === "video" && (
-              <Badge className="absolute top-2 right-2 bg-foreground/80 text-background backdrop-blur-sm rounded-full text-[10px] px-1.5 py-0.5">
-                <Video className="h-3 w-3" />
-              </Badge>
+            {/* サムネイル */}
+            {item.media_type === "video" ? (
+              <>
+                <video
+                  src={item.object_path}
+                  preload="metadata"
+                  muted
+                  playsInline
+                  className="w-full object-cover"
+                />
+                {/* 再生アイコン */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                    <Play className="h-5 w-5 text-white fill-white ml-0.5" />
+                  </div>
+                </div>
+              </>
+            ) : item.thumbnail_path || item.object_path ? (
+              <img
+                src={item.thumbnail_path ?? item.object_path}
+                alt=""
+                className="w-full object-cover"
+                loading="lazy"
+              />
+            ) : (
+              <div className="w-full aspect-square flex items-center justify-center">
+                <ImageIcon className="h-8 w-8 text-foreground/20" />
+              </div>
             )}
-            
-            {/* Info overlay on hover */}
-            <div className="absolute inset-x-0 bottom-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-              <div className="flex items-center gap-1 text-white/90 text-[10px] mb-1">
-                <GitBranch className="w-3 h-3" />
-                <span className="truncate">{media.eventName}</span>
-              </div>
-              <p className="text-white text-xs font-medium truncate">{media.title}</p>
-              <div className="flex items-center gap-3 mt-1.5 text-white/70 text-[10px]">
-                <span className="flex items-center gap-1">
-                  <Eye className="w-3 h-3" />
-                  {media.views}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Heart className="w-3 h-3" />
-                  {media.likes}
-                </span>
-              </div>
-            </div>
-            
-            {/* Subtle event indicator */}
-            <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <span className="px-2 py-1 text-[10px] bg-white/20 backdrop-blur-sm text-white rounded-full">
-                {media.date}
-              </span>
-            </div>
-          </Link>
+          </button>
         ))}
       </div>
+
+      {/* もっと見る */}
+      {hasMore && (
+        <button
+          type="button"
+          onClick={handleLoadMore}
+          disabled={isLoadingMore}
+          className="w-full py-3 text-sm text-accent font-medium rounded-xl bg-foreground/5 hover:bg-foreground/10 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          {isLoadingMore ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              読み込み中...
+            </>
+          ) : (
+            <>もっと見る（残り{totalCount - media.length}件）</>
+          )}
+        </button>
+      )}
+
+      {/* Media Viewer */}
+      <MediaViewer
+        media={media}
+        initialIndex={viewerIndex}
+        open={viewerOpen}
+        onOpenChange={setViewerOpen}
+        currentUserId={currentUserId}
+        currentUserRole={currentUserRole}
+        onMediaDeleted={onMediaDeleted}
+      />
     </div>
   )
 }

@@ -46,9 +46,9 @@ deaito の軸は、**記憶を保存することではなく、記憶を起点�
 
 ## 商用版方針（これから）
 
-- 認証・DB・Storage は Supabase に統一
+- 認証・DB は Supabase、メディア保存は GCP Cloud Storage を利用
 - PostgreSQL + RLS を中心に、REST API（PostgREST）でデータアクセス
-- 画像/動画アップロードを Supabase Storage へ接続し、`media_assets` と整合管理
+- 画像/動画アップロードを GCP Cloud Storage へ接続し、`media_assets` と整合管理
 
 関連設計資料:
 

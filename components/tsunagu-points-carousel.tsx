@@ -1,59 +1,15 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef } from "react"
 import Link from "next/link"
-import { Sparkles, Users, ChevronRight } from "lucide-react"
+import { Sparkles, Users } from "lucide-react"
+import type { CarouselAlbumPoint } from "@/lib/album-types"
 
-// 各アルバムのつなぐポイントデータ
-const albumPoints = [
-  {
-    id: "1",
-    name: "桜ヶ丘高校 3年A組",
-    year: "2017年卒業",
-    points: 396,
-    threshold: 500,
-    activeUsers: 12,
-    trend: "+23",
-  },
-  {
-    id: "2",
-    name: "東京大学 工学部",
-    year: "2021年卒業",
-    points: 234,
-    threshold: 500,
-    activeUsers: 8,
-    trend: "+15",
-  },
-  {
-    id: "3",
-    name: "青葉中学校 3年B組",
-    year: "2014年卒業",
-    points: 489,
-    threshold: 500,
-    activeUsers: 18,
-    trend: "+42",
-  },
-  {
-    id: "4",
-    name: "さくら幼稚園",
-    year: "2008年卒園",
-    points: 156,
-    threshold: 500,
-    activeUsers: 5,
-    trend: "+8",
-  },
-  {
-    id: "5",
-    name: "テニスサークル",
-    year: "2019年〜2021年",
-    points: 312,
-    threshold: 500,
-    activeUsers: 9,
-    trend: "+31",
-  },
-]
+interface TsunaguPointsCarouselProps {
+  albums: CarouselAlbumPoint[]
+}
 
-export function TsunaguPointsCarousel() {
+export function TsunaguPointsCarousel({ albums }: TsunaguPointsCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -67,7 +23,7 @@ export function TsunaguPointsCarousel() {
     const cardWidth = 180 + 12 // カード幅 + gap
     const scrollPosition = container.scrollLeft
     const newIndex = Math.round(scrollPosition / cardWidth)
-    setActiveIndex(Math.max(0, Math.min(newIndex, albumPoints.length - 1)))
+    setActiveIndex(Math.max(0, Math.min(newIndex, albums.length - 1)))
   }
 
   // 特定のカードへスクロール
@@ -114,6 +70,22 @@ export function TsunaguPointsCarousel() {
     containerRef.current.scrollLeft = scrollLeft - walk
   }
 
+  if (albums.length === 0) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 px-1">
+          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#f5d9c8] to-[#e8a87c] flex items-center justify-center">
+            <span className="text-xs">🌱</span>
+          </div>
+          <h3 className="text-sm font-medium text-foreground/70">つなぐポイント</h3>
+        </div>
+        <div className="ios-card p-8 mx-4 text-center text-foreground/40 text-sm">
+          アルバムに参加するとポイントが表示されます
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
       {/* ヘッダー */}
@@ -140,7 +112,7 @@ export function TsunaguPointsCarousel() {
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
       >
-        {albumPoints.map((album, index) => {
+        {albums.map((album, index) => {
           const isActive = index === activeIndex
           const percentage = Math.min((album.points / album.threshold) * 100, 100)
           const isNearThreshold = percentage >= 90
@@ -171,11 +143,11 @@ export function TsunaguPointsCarousel() {
                     style={{ height: `${percentage}%` }}
                   >
                     <div className={`absolute inset-0 ${
-                      isNearThreshold 
+                      isNearThreshold
                         ? "bg-gradient-to-t from-[#e8a87c]/80 via-[#f0c4a8]/60 to-[#f5d9c8]/50"
                         : "bg-gradient-to-t from-[#e8a87c]/60 via-[#f0c4a8]/40 to-[#f5d9c8]/30"
                     }`} />
-                    
+
                     {/* 波 */}
                     <svg className="absolute top-0 left-0 w-full h-4 -translate-y-1/2" viewBox="0 0 100 20" preserveAspectRatio="none">
                       <path
@@ -246,7 +218,7 @@ export function TsunaguPointsCarousel() {
 
       {/* インジケーター */}
       <div className="flex items-center justify-center gap-1.5">
-        {albumPoints.map((_, index) => (
+        {albums.map((_, index) => (
           <button
             key={index}
             className={`transition-all duration-300 rounded-full ${

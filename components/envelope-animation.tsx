@@ -6,9 +6,10 @@ import { Sparkles } from "lucide-react"
 interface EnvelopeAnimationProps {
   onComplete: () => void
   title: string
+  senderName?: string
 }
 
-export function EnvelopeAnimation({ onComplete, title }: EnvelopeAnimationProps) {
+export function EnvelopeAnimation({ onComplete, title, senderName }: EnvelopeAnimationProps) {
   const callbackRef = useRef(onComplete)
   callbackRef.current = onComplete
   const [fading, setFading] = useState(false)
@@ -83,7 +84,7 @@ export function EnvelopeAnimation({ onComplete, title }: EnvelopeAnimationProps)
               className="text-[#c9a87c] text-xs font-medium mb-2"
               style={{ animation: "ea-fade-up 0.3s ease-out 0.5s both" }}
             >
-              つなぐ
+              {senderName ?? "つなぐ"}
             </p>
 
             {/* Divider – reveals during expand phase */}
@@ -105,7 +106,7 @@ export function EnvelopeAnimation({ onComplete, title }: EnvelopeAnimationProps)
               className="mt-2 px-3 py-1 rounded-full bg-[#e8a87c]/10 text-[#e8a87c] text-[10px]"
               style={{ opacity: 0, animation: "ea-scale-in 0.4s ease-out 2.05s both" }}
             >
-              再会のお誘い
+              アルバム招待
             </div>
           </div>
         </div>
@@ -171,7 +172,7 @@ export function EnvelopeAnimation({ onComplete, title }: EnvelopeAnimationProps)
         className="absolute bottom-16 left-0 right-0 text-center text-white/70 text-xs tracking-wide"
         style={{ animation: "ea-tagline 2s ease-in-out 0.15s both" }}
       >
-        再会のお誘いが届きました
+        招待状が届きました
       </p>
     </div>
   )

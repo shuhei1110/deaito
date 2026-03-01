@@ -45,10 +45,14 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname
   const isAuthRoute = pathname.startsWith("/auth")
+  const isPublicRoute = pathname === "/terms"
   const allowWhenAuthenticated =
-    pathname.startsWith("/auth/callback") || pathname.startsWith("/auth/reset-password")
+    pathname.startsWith("/auth/callback") ||
+    pathname.startsWith("/auth/forgot-password") ||
+    pathname.startsWith("/auth/reset-password") ||
+    pathname.startsWith("/auth/setup")
 
-  if (!user && !isAuthRoute) {
+  if (!user && !isAuthRoute && !isPublicRoute) {
     const url = request.nextUrl.clone()
     url.pathname = "/auth/login"
     url.searchParams.set("next", pathname)
@@ -59,6 +63,21 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = "/"
     return NextResponse.redirect(url)
+  }
+
+  // セットアップ未完了ユーザーを /auth/setup に強制リダイレクト
+  if (user && !isAuthRoute && !isPublicRoute) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
+      .maybeSingle()
+
+    if (!profile?.username) {
+      const url = request.nextUrl.clone()
+      url.pathname = "/auth/setup"
+      return NextResponse.redirect(url)
+    }
   }
 
   return response

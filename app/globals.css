@@ -126,6 +126,7 @@
 }
 
 /* iOS Glassmorphism - Enhanced */
+@layer components {
 .ios-glass {
   background: #faf8f5;
 }
@@ -259,9 +260,10 @@
 }
 
 .dark .ios-bg-gradient::after {
-  background: 
+  background:
     radial-gradient(circle at 70% 60%, rgba(200, 150, 100, 0.06) 0%, transparent 40%),
     radial-gradient(circle at 20% 40%, rgba(180, 130, 90, 0.04) 0%, transparent 35%);
+}
 }
 
 /* iOS-style safe area padding */

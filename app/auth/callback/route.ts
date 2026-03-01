@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
         })
 
         if (created) {
-          return NextResponse.redirect(new URL("/profile", request.url))
+          return NextResponse.redirect(new URL("/auth/setup", request.url))
         }
       }
 

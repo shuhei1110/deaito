@@ -37,6 +37,22 @@
           <mxGeometry x="90" y="390" width="170" height="70" as="geometry"/>
         </mxCell>
 
+        <mxCell id="17" value="認証" style="swimlane;rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="420" width="460" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="18" value="/auth/login&#xa;ログイン" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;" vertex="1" parent="17">
+          <mxGeometry x="20" y="40" width="130" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="19" value="/auth/sign-up&#xa;新規登録" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;" vertex="1" parent="17">
+          <mxGeometry x="165" y="40" width="130" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="25" value="/auth/setup&#xa;プロフィール初期設定&#xa;(初回ログイン時)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;" vertex="1" parent="17">
+          <mxGeometry x="310" y="30" width="140" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="130" value="初回登録後" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="19" target="25"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="131" value="設定完了" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;" edge="1" parent="1" source="25" target="10"><mxGeometry relative="1" as="geometry"/></mxCell>
+
         <mxCell id="20" value="/settings&#xa;設定" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#EA580C;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="90" y="540" width="170" height="70" as="geometry"/>
         </mxCell>
